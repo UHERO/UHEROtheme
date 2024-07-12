@@ -6,7 +6,9 @@ to plots made with ggplot.
 To install the package, run the following lines:
 
 ```
-install.packages('devtools')
+# install "devtools" package if needed
+# install.packages('devtools')
+library(devtools)
 devtools::install_github('uhero/uherotheme')
 ```
 
