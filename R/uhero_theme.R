@@ -7,15 +7,15 @@ showtext_auto()
 #' Modifies the ggplot minimal theme to fit the style used for UHERO reports/presentations.
 #'
 #' @param layout A boolean to indicate whether or not the theme is being applied to a plot that is to be used in a UHERO report layout.
-#' This defaults to true. If layout is TRUE, then the base size is set to 9 and the font family is set to open sans. If the parameter is FALSE, then
-#' the base size is set to 30 and the font family is set to opensans-semibold. Set layout to FALSE if the plot is being used for a powerpoint or keynote presentation.
+#' This defaults to false. If layout is TRUE, then the base size is set to 9 and the font family is set to open sans. If the parameter is FALSE, then
+#' the base size is set to 30 and the font family is set to opensans-semibold. Set layout to TRUE if the plot is being used for a UHERO report.
 #'
 #'
 #' @export
 #'
 #' @examples
 #' plot <- ggplot2::ggplot(ggplot2::mpg) + uhero_theme()
-uhero_theme <- function(layout = TRUE) {
+uhero_theme <- function(layout = FALSE) {
   font_size <- if (layout) 9 else 30
   font_family <- if (layout) "opensans" else "opensans-semibold"
   theme_minimal(

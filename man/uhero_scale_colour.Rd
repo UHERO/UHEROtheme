@@ -13,11 +13,11 @@ uhero_scale_colour(palette = "primary", discrete = TRUE, reverse = FALSE, ...)
 
 \item{reverse}{A boolean that defaults to FALSE. Set to TRUE to reverse the color scale.}
 
-\item{...}{Additional parameters that can be passed to \code{ggplot2::scale_fill_gradientn}}
+\item{...}{Additional parameters that can be passed to \code{ggplot2::discrete_scale} or \code{ggplot2::scale_fill_gradientn}}
 }
 \description{
-Uses \code{ggplot2::discrete_scale} for the color aesthetic for discrete scales and \code{ggplot2::scale_fill_gradientn}
-for the color aesthetic on continuous scales.
+Uses \code{ggplot2::discrete_scale} for the color aesthetic for discrete scales and \code{ggplot2::scale_colour_gradientn}
+for the color aesthetic on continuous scales. \code{uhero_scale_color} is available as an alias.
 }
 \examples{
 ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(hwy, class, color = class)) +

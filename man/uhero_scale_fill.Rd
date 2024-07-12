@@ -13,7 +13,7 @@ uhero_scale_fill(palette = "primary", discrete = TRUE, reverse = FALSE, ...)
 
 \item{reverse}{A boolean that defaults to FALSE. Set to TRUE to reverse the color scale.}
 
-\item{...}{Additional parameters that can be passed to \code{ggplot2::scale_fill_gradientn}}
+\item{...}{Additional parameters that can be passed to \code{ggplot2::discrete_scale} or \code{ggplot2::scale_fill_gradientn}}
 }
 \description{
 Uses \code{ggplot2::discrete_scale} for the fill aesthetic for discrete scales and \code{ggplot2::scale_fill_gradientn}

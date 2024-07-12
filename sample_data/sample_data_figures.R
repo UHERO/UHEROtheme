@@ -75,7 +75,7 @@ nonfarm_payrolls_plot <- ggplot(nonfarm_payrolls_long, aes(x = Date, y = value, 
     ) +
   coord_cartesian(clip = 'off') +
   scale_x_date(date_labels="%b %y",date_breaks  ="6 month") +
-  uhero_theme(layout = FALSE) +
+  uhero_theme(layout = TRUE) +
   uhero_scale_colour() +
   theme(legend.position = 'none',
         plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"))
@@ -92,7 +92,7 @@ prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre 
     family = "opensans",
     size = 9 / .pt) +
   coord_flip(clip = "off") +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   uhero_scale_colour() +
   uhero_scale_fill() +
   theme(legend.position = 'none',
@@ -111,7 +111,7 @@ job_open_plot <- ggplot(job_open_unemp_long, aes(x = Date, y = value, group = na
     size = 9 / .pt,
     hjust = 0) +
   uhero_scale_colour() +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
@@ -132,7 +132,7 @@ mortgages_plot <- ggplot(mortgages_long, aes(x = Month, y = value, group = name,
     ) +
   coord_cartesian(clip = "off") +
   uhero_scale_fill() +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   theme(
     legend.position = "none",
   )
@@ -151,7 +151,7 @@ vis_market_forecast_plot <- ggplot(vis_market_forecast_long, aes(x = Date, y = v
     size = 9 / .pt
   ) +
   uhero_scale_colour() +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
@@ -175,7 +175,7 @@ vexp_plot <- ggplot(vexp_long, aes(x = name, y = value, fill = Country)) +
     size = 9 /.pt,
     hjust = 0
   ) +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   coord_cartesian(clip = "off") +
   theme(
     legend.position = 'none',
@@ -204,7 +204,7 @@ transactions_plot <- ggplot(transactions_long, aes(x = year, group = name, color
   ) +
   uhero_scale_colour() +
   coord_cartesian(clip = "off") +
-  uhero_theme() +
+  uhero_theme(layout = TRUE) +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")

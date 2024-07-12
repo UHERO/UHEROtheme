@@ -14,7 +14,7 @@ uhero_scale_colour_diverge(high = "blue", low = "orange", ...)
 \item{...}{Any other parameters that can be passed to \code{ggplot2::scale_color_gradient2}}
 }
 \description{
-Uses \code{ggplot2::scale_color_gradient2}
+Uses \code{ggplot2::scale_color_gradient2}. \code{uhero_scale_color_diverge} is available as an alias.
 }
 \examples{
 set.seed(1)

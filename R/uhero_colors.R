@@ -78,13 +78,13 @@ discrete_palette <- function(pal) {
 
 #' Applies the UHERO color palette to ggplot's color aesthetic.
 #'
-#' Uses \code{ggplot2::discrete_scale} for the color aesthetic for discrete scales and \code{ggplot2::scale_fill_gradientn}
-#' for the color aesthetic on continuous scales.
+#' Uses \code{ggplot2::discrete_scale} for the color aesthetic for discrete scales and \code{ggplot2::scale_colour_gradientn}
+#' for the color aesthetic on continuous scales. \code{uhero_scale_color} is available as an alias.
 #'
 #' @param palette A string that defaults to "primary". This can also be set to either "secondary" or "all".
 #' @param discrete A boolean that defaults to TRUE. Set to FALSE for a continuous scale.
 #' @param reverse A boolean that defaults to FALSE. Set to TRUE to reverse the color scale.
-#' @param ... Additional parameters that can be passed to \code{ggplot2::scale_fill_gradientn}
+#' @param ... Additional parameters that can be passed to \code{ggplot2::discrete_scale} or \code{ggplot2::scale_fill_gradientn}
 #'
 #' @export
 #'
@@ -110,7 +110,7 @@ uhero_scale_colour <- function(palette = "primary", discrete = TRUE, reverse = F
 #' @param palette A string that defaults to "primary". This can also be set to either "secondary" or "all".
 #' @param discrete A boolean that defaults to TRUE. Set to FALSE for a continuous scale.
 #' @param reverse A boolean that defaults to FALSE. Set to TRUE to reverse the color scale.
-#' @param ... Additional parameters that can be passed to \code{ggplot2::scale_fill_gradientn}
+#' @param ... Additional parameters that can be passed to \code{ggplot2::discrete_scale} or \code{ggplot2::scale_fill_gradientn}
 #'
 #' @export
 #'
@@ -144,7 +144,7 @@ uhero_scale_fill_diverge <- function(high = "blue", low = "orange", ...) {
 
 #' Applies the UHERO color palette to ggplot's diverging color aesthetic.
 #'
-#' Uses \code{ggplot2::scale_color_gradient2}
+#' Uses \code{ggplot2::scale_color_gradient2}. \code{uhero_scale_color_diverge} is available as an alias.
 #'
 #' @param high A string that defaults to "blue". Can accept any of the other colors in \code{uhero_color_list}.
 #' @param low A string that defaults to "orange". Can accept any of the other colors in \code{uhero_color_list}.
