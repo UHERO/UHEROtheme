@@ -1,7 +1,7 @@
 # UHERO Theme
 
 This package currently contains functions to apply the UHERO style guide
-to plots made with ggplot.
+to plots made with [ggplot](https://ggplot2.tidyverse.org/) or [highcharter](https://jkunst.com/highcharter/).
 
 To install the package, run the following lines:
 
@@ -231,3 +231,13 @@ df <- data.frame(x = rnorm(10) * 100000, y = seq(0, 1, length.out = 10))
 plot <- ggplot2::ggplot(df, ggplot2::aes(x, y)) + ggplot2::geom_point()
 export_report_layout('plot.png', plot)
 ```
+## Highcharter
+### `uhero_hc`
+
+`uhero_hc` can be passed to highcharter's `hc_add_theme()` to apply UHERO styling to plots made with Highcharter. 
+Examples applying the theme to highcharter figures can be found in `sample_data/sample_data_figures_HC.R`
+
+## Logos
+The UHERO Analytics logo and other variations of it can be found by running `uhero_logos` in the R console. 
+The list returns the currently available topic areas and the URL to the logo file. The availble research areas are: 
+`analytics`, `economy`, `energy`, `environment`, `forecast`, `health`, `housing`, and `tax`.
