@@ -91,3 +91,56 @@ uhero_scale_nums <- function(x, scale_limit = max(x, na.rm = TRUE), prefix = '',
   }
   ifelse(x == scale_limit, format(paste0(prefix, x / n, suffix), ...), format(paste0(x / n), ...))
 }
+
+
+## THEME FOR HIGHCHARTER
+uhero_hc <- hc_theme(
+  # colors = c(
+  #   "#1D667F",
+  #   "#F6A01B",
+  #   "#9BBB59",
+  #   "#8064A2",
+  #   "#7EC4CA",
+  #   "#505050",
+  #   "red",
+  #   "#6DA2BC",
+  #   "#FFC593",
+  #   "#BADA7C",
+  #   "#B69CD9",
+  #   "#9CE0E6",
+  #   "#C5C5C5",
+  #   "#FF9191"
+  #   ),
+  colors = as.vector(uhero_color_list),
+  chart = list(
+    backgroundColor = "transparent",
+    style = list(
+      fontFamily = "Open Sans",
+      color = "#505050"
+    )
+  ),
+  title = list(
+    align = "center",
+    style = list(
+      fontWeight = "bold"
+    )
+  ),
+  subtitle = list(
+    align = "center"
+  ),
+  yAxis = list(
+    gridLineWidth = 0
+  )
+)
+
+
+uhero_logos <- c(
+  `analytics` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/analytics.png",
+  `economy` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/economy.png",
+  `energy` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/energy.png",
+  `environment` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/environment.png",
+  `forecast` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/forecast.png",
+  `health` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/health.png",
+  `housing` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/housing.png",
+  `tax` = "https://uhero.hawaii.edu/wp-content/uploads/2024/07/tax.png"
+)
