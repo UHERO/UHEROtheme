@@ -15,7 +15,6 @@
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom grDevices colorRampPalette
 #' @importFrom highcharter hc_theme
-#' @importFrom showtext showtext_auto
 #' @importFrom sysfonts font_add
 ## usethis namespace: end
 NULL

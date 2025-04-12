@@ -55,13 +55,13 @@ dual_y_axis_transform <- function(
     y2_limits = NULL
 ) {
 
-  left_series <- data %>% select(all_of(y1_series))
-  right_series <- data %>% select(all_of(y2_series))
+  y1_series <- data %>% select(all_of(y1_series))
+  y2_series <- data %>% select(all_of(y2_series))
 
-  left_max <- set_y_max(y1_limits, left_series)
-  left_min <- set_y_min(y1_limits, left_series)
-  right_max <- set_y_max(y2_limits, right_series)
-  right_min <- set_y_min(y2_limits, right_series)
+  left_max <- set_y_max(y1_limits, y1_series)
+  left_min <- set_y_min(y1_limits, y1_series)
+  right_max <- set_y_max(y2_limits, y2_series)
+  right_min <- set_y_min(y2_limits, y2_series)
 
   scale_factor <- (left_max - left_min) / (right_max - right_min)
 
@@ -95,60 +95,66 @@ add_geom_col <- function(plot, series_list) {
 
 uhero_draw_dual_y_chart <- function(
     data,
-    left_series,
-    right_series,
-    left_limits = NULL,
-    right_limits = NULL,
+    y1_series,
+    y2_series,
+    y1_limits = NULL,
+    y2_limits = NULL,
     x_var,
-    left_chart_type = "line",
-    right_chart_type = "line",
-    left_percent = FALSE,
-    right_percent = FALSE
+    y1_chart_type = "line",
+    y2_chart_type = "line",
+    y1_percent = FALSE,
+    y2_percent = FALSE,
+    y1_unit_prefix = '',
+    y2_unit_prefix = ''
   ) {
   transformation_fns <- dual_y_axis_transform(
     data,
-    left_series,
-    right_series,
-    left_limits,
-    right_limits
+    y1_series,
+    y2_series,
+    y1_limits,
+    y2_limits
   )
 
-  rescaled_data <- data %>% mutate(across(all_of(right_series), transformation_fns$rescale))
+  rescaled_data <- data %>% mutate(across(all_of(y2_series), transformation_fns$rescale))
 
-  rescaled_data_long <- rescaled_data %>% pivot_longer(-x_var, names_to = "name", values_to = "value")
+  rescaled_data_long <-
+    rescaled_data %>%
+    pivot_longer(-all_of(x_var), names_to = "name", values_to = "value") %>%
+    mutate(label = if_else(!!sym(x_var) == max(!!sym(x_var)), as.character(name), NA_character_))
 
-  y1_breaks <- set_breaks(left_limits)
+  y1_breaks <- set_breaks(y1_limits)
 
-  y2_breaks <- set_breaks(right_limits)
+  y2_breaks <- set_breaks(y2_limits)
 
   x_var <- sym(x_var)
 
-  plot <- rescaled_data_long %>% ggplot(aes(x = !!x_var))
+  plot <- rescaled_data_long %>% ggplot(aes(x = !!x_var, label = name))
 
-  if (right_chart_type == "col") {
-    plot <- add_geom_col(plot, right_series)
+  if (y2_chart_type == "col") {
+    plot <- add_geom_col(plot, y2_series)
   }
 
-  if (left_chart_type == "col") {
-    plot <- add_geom_col(plot, left_series)
+  if (y1_chart_type == "col") {
+    plot <- add_geom_col(plot, y1_series)
   }
 
-  if (left_chart_type == "line") {
-    plot <- add_geom_line(plot, left_series)
+  if (y1_chart_type == "line") {
+    plot <- add_geom_line(plot, y1_series)
   }
 
-  if (right_chart_type == "line") {
-    plot <- add_geom_line(plot, right_series)
+  if (y2_chart_type == "line") {
+    plot <- add_geom_line(plot, y2_series)
   }
 
   plot <- plot +
+    geom_text_repel(aes(label = label, y = value, color = name), nudge_x = 1, na.rm = TRUE) +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, percent = left_percent),
+      labels = function(x) uhero_scale_nums(x, prefix = y1_unit_prefix, percent = y1_percent),
       breaks = if (is.null(y1_breaks)) waiver() else y1_breaks,
-      limits = if (is.null(left_limits)) NULL else c(left_limits[1], left_limits[2]),
+      limits = if (is.null(y1_limits)) NULL else c(y1_limits[1], y1_limits[2]),
       sec.axis = sec_axis(
         transform = transformation_fns$transform,
-        labels = function(x) uhero_scale_nums(x, percent = right_percent),
+        labels = function(x) uhero_scale_nums(x, y2_unit_prefix, percent = y2_percent),
         breaks = if (is.null(y2_breaks)) waiver() else y2_breaks,
       ),
     ) +
@@ -158,16 +164,30 @@ uhero_draw_dual_y_chart <- function(
   plot
 }
 
+uhero_draw_dual_y_chart(
+  transactions,
+  c("Condominium Transactions", "Single-family Transactions"),
+  c("Interest Rate"),
+  y1_limits = NULL,
+  y2_limits = NULL,
+  "year",
+  "line",
+  "line",
+  FALSE,
+  TRUE
+)
+
+# svglite("plot.svg")
 # uhero_draw_dual_y_chart(
 #   transactions,
 #   c("Condominium Transactions", "Single-family Transactions"),
 #   c("Interest Rate"),
-#   left_limits = NULL,
-#   right_limits = NULL,
+#   y1_limits = NULL,
+#   y2_limits = NULL,
 #   "year",
 #   "line",
 #   "line",
 #   FALSE,
 #   TRUE
-# )
-
+# ) + theme_set(theme_minimal(base_family = "Lora"))
+# dev.off()

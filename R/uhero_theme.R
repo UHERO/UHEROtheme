@@ -1,6 +1,6 @@
-font_add("opensans", regular = "./font/OpenSans-Regular.ttf", bold = "./font/OpenSans-Bold.ttf")
-font_add("opensans-semibold", regular = "./font/OpenSans-SemiBold.ttf")
-showtext_auto()
+#font_add("opensans", regular = "./font/OpenSans-Regular.ttf", bold = "./font/OpenSans-Bold.ttf")
+#font_add("opensans-semibold", regular = "./font/OpenSans-SemiBold.ttf")
+#showtext_auto()
 
 #' Adds a UHERO theme for Ggplot charts.
 #'
@@ -17,10 +17,10 @@ showtext_auto()
 #' plot <- ggplot2::ggplot(ggplot2::mpg) + uhero_theme()
 uhero_theme <- function(layout = FALSE) {
   font_size <- if (layout) 9 else 30
-  font_family <- if (layout) "opensans" else "opensans-semibold"
+  # font_family <- if (layout) "opensans" else "opensans-semibold"
   theme_minimal(
     base_size = font_size,
-    base_family = font_family
+    # base_family = font_family
   ) %+replace%
     theme(
       #text = element_text(family = "opensans", color = "#1D667F", size = 9),

@@ -1,7 +1,6 @@
 library(readxl)
 library(here)
 library(ggplot2)
-library(showtext)
 library(ggrepel)
 library(tidyr)
 library(dplyr)
