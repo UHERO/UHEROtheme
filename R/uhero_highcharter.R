@@ -44,9 +44,9 @@ fcast_line_perc_hc <- function(dataset, forecast_start, forecast_end) {
       dataset,
       "line",
       hcaes(
-        x = Date,
-        y = value,
-        group = name
+        x = dataset$Date,
+        y = dataset$value,
+        group = dataset$name
       ),
       marker = list(
         enabled = FALSE

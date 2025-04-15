@@ -6,24 +6,21 @@
 #'
 #' Modifies the ggplot minimal theme to fit the style used for UHERO reports/presentations.
 #'
-#' @param layout A boolean to indicate whether or not the theme is being applied to a plot that is to be used in a UHERO report layout.
-#' This defaults to false. If layout is TRUE, then the base size is set to 9 and the font family is set to open sans. If the parameter is FALSE, then
-#' the base size is set to 30 and the font family is set to opensans-semibold. Set layout to TRUE if the plot is being used for a UHERO report.
-#'
+#' @param font_size A number indicating the font size to be used by ggplot's element_text. Defaults to 9.
 #'
 #' @export
 #'
 #' @examples
 #' plot <- ggplot2::ggplot(ggplot2::mpg) + uhero_theme()
-uhero_theme <- function(layout = FALSE) {
-  font_size <- if (layout) 9 else 30
+uhero_theme <- function(font_size = 9) {
+  # font_size <- if (layout) 9 else 30
   # font_family <- if (layout) "opensans" else "opensans-semibold"
   theme_minimal(
     base_size = font_size,
-    # base_family = font_family
+    base_family = "Open Sans"
   ) %+replace%
     theme(
-      #text = element_text(family = "opensans", color = "#1D667F", size = 9),
+      text = element_text(family = "Open Sans", color = "#1D667F", size = 9),
       # Remove axis title and lines
       axis.title = element_blank(),
       axis.line = element_blank(),
@@ -35,6 +32,7 @@ uhero_theme <- function(layout = FALSE) {
       panel.grid = element_blank(),
       # Remove background panel
       panel.background = element_blank(),
+      legend.position = "none"
     )
 }
 
