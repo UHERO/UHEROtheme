@@ -21,6 +21,7 @@ nonfarm_payrolls_long <- nonfarm_payrolls %>%
   )
 
 prefire_payrolls_long <- prefire_payrolls %>%
+  mutate(`Maui County` = prefire_payrolls$`Maui County` * 100, `All Other Counties` = prefire_payrolls$`All Other Counties` * 100) %>%
   pivot_longer(
     `Maui County`:`All Other Counties`
   )
@@ -69,17 +70,17 @@ nonfarm_payrolls_plot <- ggplot(nonfarm_payrolls_long, aes(x = Date, y = value, 
     y = c(100, 97, 76, 75, 84),
     label = c("Hawaii", "Honolulu", "State", "Kauai", "Maui"),
     color = c(uhero_colors("blue"), uhero_colors("orange"), uhero_colors("light blue"), uhero_colors("green"), uhero_colors("purple")),
-    size = 25 / .pt,
+    size = 9 / .pt,
     family = "opensans"
     ) +
   coord_cartesian(clip = 'off') +
   scale_x_date(date_labels="%b %y",date_breaks  ="6 month") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   uhero_scale_colour() +
   theme(legend.position = 'none',
         plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"))
 
-prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre Fire`, y = value * 100, group = name, fill = name)) +
+prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre Fire`, y = value, group = name, fill = name)) +
   geom_col(position = position_dodge2(reverse=TRUE)) +
   scale_y_continuous(labels = function(x) uhero_scale_nums(x, percent = TRUE), limits = c(-20, 20)) +
   annotate(
@@ -91,7 +92,7 @@ prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre 
     family = "opensans",
     size = 9 / .pt) +
   coord_flip(clip = "off") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   uhero_scale_colour() +
   uhero_scale_fill() +
   theme(legend.position = 'none',
@@ -110,7 +111,7 @@ job_open_plot <- ggplot(job_open_unemp_long, aes(x = Date, y = value, group = na
     size = 9 / .pt,
     hjust = 0) +
   uhero_scale_colour() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
@@ -131,7 +132,7 @@ mortgages_plot <- ggplot(mortgages_long, aes(x = Month, y = value, group = name,
     ) +
   coord_cartesian(clip = "off") +
   uhero_scale_fill() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = "none",
   )
@@ -150,7 +151,7 @@ vis_market_forecast_plot <- ggplot(vis_market_forecast_long, aes(x = Date, y = v
     size = 9 / .pt
   ) +
   uhero_scale_colour() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
@@ -174,7 +175,7 @@ vexp_plot <- ggplot(vexp_long, aes(x = name, y = value, fill = Country)) +
     size = 9 /.pt,
     hjust = 0
   ) +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   coord_cartesian(clip = "off") +
   theme(
     legend.position = 'none',
@@ -203,7 +204,7 @@ transactions_plot <- ggplot(transactions_long, aes(x = year, group = name, color
   ) +
   uhero_scale_colour() +
   coord_cartesian(clip = "off") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")

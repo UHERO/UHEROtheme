@@ -2,7 +2,7 @@
 % Please edit documentation in R/uhero_plot.R
 \name{uhero_draw_dual_y_chart}
 \alias{uhero_draw_dual_y_chart}
-\title{Generate a plot with ggplot2 with 2 y axes.}
+\title{Generate a plot with ggplot2 with the UHERO theme with 2 y axes.}
 \usage{
 uhero_draw_dual_y_chart(
   data,
@@ -20,7 +20,7 @@ uhero_draw_dual_y_chart(
 )
 }
 \arguments{
-\item{data}{Dataset to be used. See sampleData.xlsx in the sampledata directory of the package for an example}
+\item{data}{Dataset to be used. See sampleData.xlsx in the sampledata directory of the package for an example.}
 
 \item{y1_series}{A vector of string names (i.e. c("col_name")) corresponding to the columns in the data that should be plotted on the primary/left axis.}
 
@@ -48,5 +48,26 @@ uhero_draw_dual_y_chart(
 Returns a ggplot object
 }
 \description{
-Generate a plot with ggplot2 with 2 y axes.
+Generate a plot with ggplot2 with the UHERO theme with 2 y axes.
+}
+\examples{
+df <- data.frame(
+  x = c(2010, 2011, 2012, 2013, 2014, 2015),
+  y = c(5, 3, 10, 15, 4, 7),
+  z = c(55, 70, 62, 58, 60, 68)
+)
+\dontrun{uhero_draw_dual_y_chart(
+  df,
+  y1_series = c("y"),
+  y2_series = c("z"),
+  y1_limits = NULL,
+  y2_limits = NULL,
+  x_var = "x",
+  y1_chart_type = "line",
+  y2_chart_type = "line",
+  y1_percent = FALSE,
+  y2_percent = FALSE,
+  y1_unit_prefix = '',
+  y2_unit_prefix = ''
+)}
 }

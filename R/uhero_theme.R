@@ -1,7 +1,3 @@
-#font_add("opensans", regular = "./font/OpenSans-Regular.ttf", bold = "./font/OpenSans-Bold.ttf")
-#font_add("opensans-semibold", regular = "./font/OpenSans-SemiBold.ttf")
-#showtext_auto()
-
 #' Adds a UHERO theme for Ggplot charts.
 #'
 #' Modifies the ggplot minimal theme to fit the style used for UHERO reports/presentations.
@@ -13,26 +9,24 @@
 #' @examples
 #' plot <- ggplot2::ggplot(ggplot2::mpg) + uhero_theme()
 uhero_theme <- function(font_size = 9) {
-  # font_size <- if (layout) 9 else 30
-  # font_family <- if (layout) "opensans" else "opensans-semibold"
   theme_minimal(
     base_size = font_size,
-    base_family = "Open Sans"
+    base_family = "OpenSans-Regular"
   ) %+replace%
     theme(
-      text = element_text(family = "Open Sans", color = "#1D667F", size = 9),
+      text = element_text(family = "OpenSans-Regular", color = "#1D667F", size = 9),
       # Remove axis title and lines
       axis.title = element_blank(),
       axis.line = element_blank(),
       #axis.text = element_text(family = "opensans", color = "#505050", size = 9),
       # Remove axis tick lines
       axis.ticks = element_blank(),
-      legend.key = element_blank(),
-      legend.title = element_blank(),
+     # legend.key = element_blank(),
+      #legend.title = element_blank(),
       panel.grid = element_blank(),
       # Remove background panel
       panel.background = element_blank(),
-      legend.position = "none"
+      #legend.position = "none"
     )
 }
 
@@ -93,22 +87,6 @@ uhero_scale_nums <- function(x, scale_limit = max(x, na.rm = TRUE), prefix = '',
 
 ## THEME FOR HIGHCHARTER
 uhero_hc <- hc_theme(
-  # colors = c(
-  #   "#1D667F",
-  #   "#F6A01B",
-  #   "#9BBB59",
-  #   "#8064A2",
-  #   "#7EC4CA",
-  #   "#505050",
-  #   "red",
-  #   "#6DA2BC",
-  #   "#FFC593",
-  #   "#BADA7C",
-  #   "#B69CD9",
-  #   "#9CE0E6",
-  #   "#C5C5C5",
-  #   "#FF9191"
-  #   ),
   colors = as.vector(uhero_color_list),
   chart = list(
     backgroundColor = "transparent",

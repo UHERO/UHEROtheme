@@ -32,3 +32,17 @@ Transform is used to transform the secondary/right axis.
 \description{
 Set up transformation and scaling functions for charts with two y axes.
 }
+\examples{
+df <- data.frame(
+  x = c(2010, 2011, 2012, 2013, 2014, 2015),
+  y = c(5, 3, 10, 15, 4, 7),
+  z = c(55, 70, 62, 58, 60, 68)
+)
+dual_y_axis_transform(
+  df,
+  y1_series = c("y"),
+  y2_series = c("z"),
+  y1_limits = c(0, 15, 5),
+  y2_limits = c(0, 70, 10)
+)
+}
