@@ -17,6 +17,7 @@ Imports:
     htmlwidgets,
     magrittr,
     rlang,
+    stats,
     svglite,
     sysfonts,
     tidyr

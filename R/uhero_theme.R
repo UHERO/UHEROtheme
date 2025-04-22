@@ -71,6 +71,8 @@ uhero_scale_nums <- function(x, scale_limit = max(x, na.rm = TRUE), prefix = '',
   }
   if (percent) {
     suffix <- paste(suffix, "%", sep="")
+    x <- x * 100
+    scale_limit <- scale_limit * 100
   }
   n <- if (thou) {
     10^3

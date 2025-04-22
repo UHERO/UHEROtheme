@@ -10,9 +10,9 @@ uhero_draw_ggplot(
   x_var,
   y_limits = NULL,
   chart_type = "line",
-  bar_position = NULL,
   percent = FALSE,
-  unit_prefix = ""
+  unit_prefix = "",
+  ...
 )
 }
 \arguments{
@@ -24,14 +24,15 @@ uhero_draw_ggplot(
 
 \item{y_limits}{A vector of numbers c(min, max, step) indicating the min, max, and steps between axis labels on the left axis. This is optional and defaults to NULL if not specified.}
 
-\item{chart_type}{A string, either "line", "col", or "bar" indicating the chart type to be used for the series.}
-
-\item{bar_position}{A string to indicate the position of the bars ("stack", "fill", "dodge", "dodge2")
-if the chart type specified is set to "bar". Defaults to NULL resulting in a stacked bar chart.}
+\item{chart_type}{A string or a vector indicating the chart type for each series. A single string like "bar" can be used to apply the bar chart type to all series.
+A vector such as c("line", "bar") or c("Col Name" = "line", "Col Name" = "bar") can be used to specify a type for each series. Current accepted chart type values
+are "line", "bar", and "col". The chart_type parameter defaults to "line".}
 
 \item{percent}{A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.}
 
 \item{unit_prefix}{A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.}
+
+\item{...}{Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.}
 }
 \value{
 Returns a ggplot object
@@ -51,7 +52,6 @@ df <- data.frame(
   x_var = "x",
   y_limits = NULL,
   chart_type = "line",
-  bar_position = NULL,
   percent = FALSE,
   unit_prefix = '',
 )}
