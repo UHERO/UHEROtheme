@@ -1,7 +1,6 @@
 library(readxl)
 library(here)
 library(ggplot2)
-library(showtext)
 library(ggrepel)
 library(tidyr)
 library(dplyr)
@@ -22,6 +21,7 @@ nonfarm_payrolls_long <- nonfarm_payrolls %>%
   )
 
 prefire_payrolls_long <- prefire_payrolls %>%
+  mutate(`Maui County` = prefire_payrolls$`Maui County` * 100, `All Other Counties` = prefire_payrolls$`All Other Counties` * 100) %>%
   pivot_longer(
     `Maui County`:`All Other Counties`
   )
@@ -61,7 +61,6 @@ vis_market_forecast_long$Date = as.Date(vis_market_forecast_long$Date, tz = "GMT
 
 
 # Figures
-#For use outside of a report layout, i.e. presentation
 nonfarm_payrolls_plot <- ggplot(nonfarm_payrolls_long, aes(x = Date, y = value, group = name, color = name)) +
   geom_line() +
   annotate(
@@ -70,17 +69,17 @@ nonfarm_payrolls_plot <- ggplot(nonfarm_payrolls_long, aes(x = Date, y = value, 
     y = c(100, 97, 76, 75, 84),
     label = c("Hawaii", "Honolulu", "State", "Kauai", "Maui"),
     color = c(uhero_colors("blue"), uhero_colors("orange"), uhero_colors("light blue"), uhero_colors("green"), uhero_colors("purple")),
-    size = 25 / .pt,
+    size = 9 / .pt,
     family = "opensans"
     ) +
   coord_cartesian(clip = 'off') +
   scale_x_date(date_labels="%b %y",date_breaks  ="6 month") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   uhero_scale_colour() +
   theme(legend.position = 'none',
         plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm"))
 
-prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre Fire`, y = value * 100, group = name, fill = name)) +
+prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre Fire`, y = value, group = name, fill = name)) +
   geom_col(position = position_dodge2(reverse=TRUE)) +
   scale_y_continuous(labels = function(x) uhero_scale_nums(x, percent = TRUE), limits = c(-20, 20)) +
   annotate(
@@ -92,7 +91,7 @@ prefire_payrolls_plot <- ggplot(prefire_payrolls_long, aes(x = `Perc Change Pre 
     family = "opensans",
     size = 9 / .pt) +
   coord_flip(clip = "off") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   uhero_scale_colour() +
   uhero_scale_fill() +
   theme(legend.position = 'none',
@@ -111,7 +110,7 @@ job_open_plot <- ggplot(job_open_unemp_long, aes(x = Date, y = value, group = na
     size = 9 / .pt,
     hjust = 0) +
   uhero_scale_colour() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
@@ -132,7 +131,7 @@ mortgages_plot <- ggplot(mortgages_long, aes(x = Month, y = value, group = name,
     ) +
   coord_cartesian(clip = "off") +
   uhero_scale_fill() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = "none",
   )
@@ -151,12 +150,11 @@ vis_market_forecast_plot <- ggplot(vis_market_forecast_long, aes(x = Date, y = v
     size = 9 / .pt
   ) +
   uhero_scale_colour() +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
   )
-
 
 colors <- c("United States" = "#1D667F", "Japan" = "#F6A01B", "Canada" = "#9BBB59", "Other Visitors" = "#C5C5C5")
 vexp_long <- transform(vexp_long, name_num = ifelse(name == "2023 February", as.numeric(factor(name)) + .25, as.numeric(factor(name)) - .25))
@@ -175,7 +173,7 @@ vexp_plot <- ggplot(vexp_long, aes(x = name, y = value, fill = Country)) +
     size = 9 /.pt,
     hjust = 0
   ) +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   coord_cartesian(clip = "off") +
   theme(
     legend.position = 'none',
@@ -204,20 +202,88 @@ transactions_plot <- ggplot(transactions_long, aes(x = year, group = name, color
   ) +
   uhero_scale_colour() +
   coord_cartesian(clip = "off") +
-  uhero_theme(layout = TRUE) +
+  uhero_theme() +
   theme(
     legend.position = 'none',
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
   )
 
+
+# Using `uhero_draw_dual_y_ggplot` and `uhero_draw_ggplot` wrapper functions
+nonfarm_payrolls_plot2 <- uhero_draw_ggplot(
+  data = nonfarm_payrolls,
+  series = c("State", "Hawaii", "Honolulu", "Kauai", "Maui"),
+  x_var = "Date"
+)$plot
+
+# Replace the legend with text labels
+nonfarm_payrolls_plot2_labeled <- add_text_labels(nonfarm_payrolls_plot2)
+
+prefire_payrolls_plot2 <- uhero_draw_ggplot(
+  data = prefire_payrolls,
+  series = c("Maui County", "All Other Counties"),
+  x_var = "Perc Change Pre Fire",
+  y_limits = c(-.2, .2, .1), # Specify the min and max of the y axis and the steps between labels
+  chart_type = "bar",
+  percent = TRUE,
+  unit_prefix = "",
+  position = "dodge2"
+)$plot + coord_flip() # Add additional settings like "coord_filp" to the plot
+
+job_open_plot2 <- uhero_draw_ggplot(
+  data = job_open_unemp,
+  series = c("Job Openings", "Unemployed Persons"),
+  x_var = "Date",
+  y_limits = c(0, 100, 20)
+)$plot
+
+mortgages_plot2 <- uhero_draw_ggplot(
+  data = mortgages,
+  series = c("<=3%", "3.01%-4%", "4.01%-5%", "5.01%-6%", ">6%"),
+  x_var = "Month",
+  chart_type = "bar",
+  percent = TRUE,
+  position = "fill"
+)$plot
+
+vis_market_plot2 <- uhero_draw_ggplot(
+  data = vis_market_forecast,
+  series = c("US", "JP", "Rest of the World"),
+  x_var = "Date",
+  chart_type = "line",
+  percent = FALSE
+)$plot
+
+vis_market_forecast2 <- add_forecast_shading(vis_market_plot2, as.POSIXct("2024-04-01"), as.POSIXct("2028-10-01"))
+vis_mkt_forecast2_labeled <- add_text_labels(vis_market_forecast2)
+
+transactions_plot2 <- uhero_draw_dual_y_ggplot(
+  data = transactions,
+  x_var = "year",
+  y1 = list(
+    series = c("Condominium Transactions", "Single-family Transactions"),
+    chart_type = "line",
+    limits = c(0, 15000, 5000),
+    percent = FALSE,
+    unit_prefix = "$"
+  ),
+  y2 = list(
+    series = c("Interest Rate"),
+    chart_type = "line",
+    limits = c(0, .1, .05),
+    percent = TRUE
+  )
+)$plot
+
 # Use draw_fcast_layout function to preview how the chart would look in a UHERO Forecast report
-draw_fcast_layout(nonfarm_payrolls_plot)
-draw_fcast_layout(prefire_payrolls_plot)
-draw_fcast_layout(job_open_plot)
-draw_fcast_layout(mortgages_plot)
-draw_fcast_layout(vis_market_forecast_plot)
+draw_fcast_layout(nonfarm_payrolls_plot2_labeled)
+draw_fcast_layout(prefire_payrolls_plot2)
+draw_fcast_layout(job_open_plot2)
+draw_fcast_layout(mortgages_plot2)
+draw_fcast_layout(vis_market_forecast2)
+draw_fcast_layout(vis_mkt_forecast2_labeled)
 draw_fcast_layout(vexp_plot)
-draw_fcast_layout(transactions_plot)
+draw_fcast_layout(transactions_plot2)
 
 # Use export_fcast_layout to export chart for the UHERO Forecast report layout
 # Please use a .svg extension if exporting for the report layout

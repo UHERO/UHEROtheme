@@ -7,10 +7,17 @@ Description: Creates a theme and utility functions to help export charts followi
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
+    dplyr,
     ggplot2,
+    ggrepel,
     grDevices,
     highcharter,
-    showtext,
-    sysfonts
+    htmlwidgets,
+    magrittr,
+    rlang,
+    stats,
+    svglite,
+    sysfonts,
+    tidyr

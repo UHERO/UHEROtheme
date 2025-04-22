@@ -21,8 +21,8 @@ available in R by using R's help operators (`help` or `?`).
 ### `uhero_theme`
 
 The `uhero_theme()` function modifies ggplot's minimal theme to fit the style
-used in UHERO reports and presentations. The function takes one optional boolean
-parameter, `layout`, which defaults to `FALSE`. The theme modifies the font face,
+used in UHERO reports and presentations. The function takes one optional numerical
+parameter, `font_size`, which defaults to `9`. The theme modifies the font face,
 font size, and removes axis lines, titles, tick marks, grid lines, and background.
 Additional changes can be made by appending ggplot's `theme()` function.
 
@@ -44,7 +44,7 @@ following parameters: `x` which is a vector passed in from the `labels` paramete
 of the ggplot scale function. `scale_limit` which defaults to the maximum value
 of `x`. `prefix` which is optional and defaults to an empty string (can be used to
 add a prefix like "$" to the front of the label). `percent` is a boolean that
-defaults to `FALSE`; set it to `TRUE` to add a "%" to the end of a label. `...`
+defaults to `FALSE`; set it to `TRUE` to multiply values by 100 add a "%" to the end of a label. `...`
 which are ... arguments that can be passed to R's `format()`. Any prefix or suffix
 will only be applied to the last/max value label.
 
@@ -59,6 +59,51 @@ vexp_plot <- ggplot(vexp_long, aes(x = name, y = value, fill = Country)) +
     plot.margin = margin(0.1, 0.1, 0.1, 0.1, "cm")
   )
 ```
+
+### `uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot`
+
+`uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot` are helper functions to draw ggplot2 charts
+with the UHERO theme applied. Currently accepted charts types are "line", "bar", and "col".
+```
+transactions_plot2 <- uhero_draw_dual_y_ggplot(
+  data = transactions,
+  x_var = "year",
+  y1 = list(
+    series = c("Condominium Transactions", "Single-family Transactions"),
+    chart_type = "line",
+    limits = c(0, 15000, 5000),
+    percent = FALSE,
+    unit_prefix = "$"
+  ),
+  y2 = list(
+    series = c("Interest Rate"),
+    chart_type = "line",
+    limits = c(0, .1, .05),
+    percent = TRUE
+  )
+)$plot
+
+vis_market_plot2 <- uhero_draw_ggplot(
+  data = vis_market_forecast,
+  series = c("US", "JP", "Rest of the World"),
+  x_var = "Date",
+  chart_type = "line",
+  percent = FALSE
+)$plot
+```
+Additional examples can be found in `sample_data/sample_data_figures.R`. Both functions return
+the plot object and the long form of the data generated for the plot.
+
+### `add_text_labels`
+By default, `uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot`, will place a lenged in the
+least crowded quadrant of the plot. The legend can be replaced in favor of text labels 
+by using `add_text_labels`. Currently, this works best for line charts.
+`add_text_labels(vis_market_plot2)`
+
+### `add_forecast_shading`
+Add a shaded region to indicate forecasted data with `add_forecast_shading`. This accepts the
+ggplot object, the start, and the end of the forecast region.
+`add_forecast_shading(vis_market_plot2, as.POSIXct("2024-04-01"), as.POSIXct("2028-10-01"))`
 
 ### `uhero_colors`
 

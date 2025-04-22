@@ -54,7 +54,7 @@ uhero_palettes <- list(
 #' @examples
 #' uhero_pal()
 #' uhero_pal("secondary", discrete = TRUE, reverse = TRUE)
-uhero_pal <- function(palette = "primary", discrete = TRUE, reverse = FALSE, ...) {
+uhero_pal <- function(palette = "all", discrete = TRUE, reverse = FALSE, ...) {
   pal <- uhero_palettes[[palette]]
   if (reverse) pal <- rev(pal)
   if (discrete) {
@@ -74,6 +74,28 @@ discrete_palette <- function(pal) {
       color_list <- palette_colors[1:n]
     }
   }
+}
+
+get_series_colors <- function(series_names, palette = "all") {
+  pal <- uhero_palettes[[palette]]
+  if (length(series_names) > length(pal)) {
+    warning("More series than colors in the selected palette.")
+  }
+  setNames(pal[seq_along(series_names)], series_names)
+}
+
+apply_color_scales <- function(plot, chart_type, series_colors) {
+  use_fill <- any(chart_type %in% c("col", 'bar', "area"))
+  use_color <- any(chart_type %in% c("line", "point", "step"))
+
+  if (use_color) {
+    plot <- plot + scale_color_manual(values = series_colors)
+  }
+  if (use_fill) {
+    plot <- plot + scale_fill_manual(values = series_colors)
+  }
+
+  plot
 }
 
 #' Applies the UHERO color palette to ggplot's color aesthetic.

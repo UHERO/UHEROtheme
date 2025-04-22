@@ -4,7 +4,7 @@
 \alias{uhero_pal}
 \title{A palette generator for UHERO colors.}
 \usage{
-uhero_pal(palette = "primary", discrete = TRUE, reverse = FALSE, ...)
+uhero_pal(palette = "all", discrete = TRUE, reverse = FALSE, ...)
 }
 \arguments{
 \item{palette}{A string that defaults to "primary". This can also be set to either "secondary" or "all".}
