@@ -207,7 +207,8 @@ validate_chart_types <- function(chart_types) {
 #'   y = c(5, 3, 10, 15, 4, 7),
 #'   z = c(55, 70, 62, 58, 60, 68)
 #' )
-#' \dontrun{uhero_draw_dual_y_ggplot(
+#' \dontrun{
+#' uhero_draw_dual_y_ggplot(
 #'   df,
 #'   x_var = "x",
 #'   y1 = list(
@@ -216,7 +217,8 @@ validate_chart_types <- function(chart_types) {
 #'   y2 = list(
 #'     series = c("z")
 #'   )
-#' )}
+#' )
+#' }
 uhero_draw_dual_y_ggplot <- function (
     data,
     x_var,
@@ -311,7 +313,7 @@ uhero_draw_dual_y_ggplot <- function (
 #' @param unit_prefix A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
-#' @returns Returns a ggplot object
+#' @returns A structure with the plot and scaled data used in the plot
 #' @export
 #'
 #' @examples
@@ -320,7 +322,8 @@ uhero_draw_dual_y_ggplot <- function (
 #'   y = c(5, 3, 10, 15, 4, 7),
 #'   z = c(55, 70, 62, 58, 60, 68)
 #' )
-#' \dontrun{uhero_draw_ggplot(
+#' \dontrun{
+#' uhero_draw_ggplot(
 #'   data = df,
 #'   series = c("y"),
 #'   x_var = "x",
@@ -328,7 +331,8 @@ uhero_draw_dual_y_ggplot <- function (
 #'   chart_type = "line",
 #'   percent = FALSE,
 #'   unit_prefix = '',
-#' )}
+#' )
+#' }
 uhero_draw_ggplot <- function(
     data,
     series,

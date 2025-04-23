@@ -47,7 +47,8 @@ df <- data.frame(
   y = c(5, 3, 10, 15, 4, 7),
   z = c(55, 70, 62, 58, 60, 68)
 )
-\dontrun{uhero_draw_dual_y_ggplot(
+\dontrun{
+uhero_draw_dual_y_ggplot(
   df,
   x_var = "x",
   y1 = list(
@@ -56,5 +57,6 @@ df <- data.frame(
   y2 = list(
     series = c("z")
   )
-)}
+)
+}
 }

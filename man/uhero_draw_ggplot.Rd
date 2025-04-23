@@ -35,7 +35,7 @@ are "line", "bar", and "col". The chart_type parameter defaults to "line".}
 \item{...}{Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.}
 }
 \value{
-Returns a ggplot object
+A structure with the plot and scaled data used in the plot
 }
 \description{
 Generates a ggplot2 chart with the UHERO theme.
@@ -46,7 +46,8 @@ df <- data.frame(
   y = c(5, 3, 10, 15, 4, 7),
   z = c(55, 70, 62, 58, 60, 68)
 )
-\dontrun{uhero_draw_ggplot(
+\dontrun{
+uhero_draw_ggplot(
   data = df,
   series = c("y"),
   x_var = "x",
@@ -54,5 +55,6 @@ df <- data.frame(
   chart_type = "line",
   percent = FALSE,
   unit_prefix = '',
-)}
+)
+}
 }
