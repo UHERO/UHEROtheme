@@ -263,13 +263,13 @@ transactions_plot2 <- uhero_draw_dual_y_ggplot(
   y1 = list(
     series = c("Condominium Transactions", "Single-family Transactions"),
     limits = c(0, 15000, 5000),
-    percent = FALSE,
+    #percent = FALSE,
     unit_prefix = "$"
   ),
   y2 = list(
     series = c("Interest Rate"),
-    limits = c(0, .1, .05),
-    percent = TRUE
+    limits = c(0, .1, .05)
+    #percent = TRUE
   )
 )$plot
 

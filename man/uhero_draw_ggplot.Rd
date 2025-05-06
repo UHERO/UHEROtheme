@@ -10,8 +10,8 @@ uhero_draw_ggplot(
   x_var,
   y_limits = NULL,
   chart_type = NULL,
-  percent = FALSE,
-  unit_prefix = "",
+  percent = NULL,
+  unit_prefix = NULL,
   ...
 )
 }

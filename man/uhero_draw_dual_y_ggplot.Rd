@@ -7,10 +7,10 @@
 uhero_draw_dual_y_ggplot(
   data,
   x_var,
-  y1 = list(series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix
-    = ""),
-  y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix
-    = ""),
+  y1 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
+    = NULL),
+  y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
+    = NULL),
   ...
 )
 }

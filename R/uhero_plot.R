@@ -235,6 +235,12 @@ uhero_draw_dual_y_ggplot <- function (
   y2_series <- y2$series
   y1_limits <- y1$limits
   y2_limits <- y2$limits
+  y1$chart_type <- y1$chart_type %||% "line"
+  y2$chart_type <- y2$chart_type %||% "line"
+  y1$percent <- ifelse(is.null(y1$percent), FALSE, y1$percent)
+  y2$percent <- ifelse(is.null(y2$percent), FALSE, y2$percent)
+  y1$unit_prefix <- y1$unit_prefix %||% ""
+  y2$unit_prefix <- y2$unit_prefix %||% ""
 
   transformation_fns <- dual_y_axis_transform(
     data,
@@ -245,8 +251,8 @@ uhero_draw_dual_y_ggplot <- function (
   )
 
   # Handle chart_type as named vector (per-series) or single type
-  y1_chart_type <- normalize_chart_type(y1$chart_type %||% "line", y1_series)
-  y2_chart_type <- normalize_chart_type(y2$chart_type %||% "line", y2_series)
+  y1_chart_type <- normalize_chart_type(y1$chart_type, y1_series)
+  y2_chart_type <- normalize_chart_type(y2$chart_type, y2_series)
 
   # Check for valid chart type(s)
   validate_chart_types(c(unname(y1_chart_type), unname(y2_chart_type)))
@@ -275,12 +281,12 @@ uhero_draw_dual_y_ggplot <- function (
   # Add scales
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = y1$unit_prefix %||% "", percent = y1$percent %||% FALSE),
+      labels = function(x) uhero_scale_nums(x, prefix = y1$unit_prefix, percent = y1$percent),
       breaks = if (is.null(y1_breaks)) waiver() else y1_breaks,
       limits = if (is.null(y1_limits)) NULL else c(y1_limits[1], y1_limits[2]),
       sec.axis = sec_axis(
         transform = transformation_fns$transform,
-        labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix %||% "", percent = y2$percent %||% FALSE),
+        labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix, percent = y2$percent),
         breaks = if (is.null(y2_breaks)) waiver() else y2_breaks,
       ),
     )
@@ -343,6 +349,8 @@ uhero_draw_ggplot <- function(
     unit_prefix = NULL,
     ...
 ) {
+  unit_prefix <- unit_prefix %||% ""
+  percent <- ifelse(is.null(percent), FALSE, percent)
   # Handle chart_type as named vector (per-series) or single type
   chart_type <- normalize_chart_type(chart_type %||% "line", series)
 
@@ -366,7 +374,7 @@ uhero_draw_ggplot <- function(
   # Scales and theme
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = unit_prefix %||% "", percent = percent %||% FALSE),
+      labels = function(x) uhero_scale_nums(x, prefix = unit_prefix, percent = percent),
       breaks = if (is.null(y_breaks)) waiver() else y_breaks,
       limits = if (is.null(y_limits)) NULL else c(y_limits[1], y_limits[2])
     )
