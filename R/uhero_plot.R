@@ -223,10 +223,10 @@ uhero_draw_dual_y_ggplot <- function (
     data,
     x_var,
     y1 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix = ""
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL
     ),
     y2 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix = ""
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL
     ),
     ...
 ) {
@@ -275,12 +275,12 @@ uhero_draw_dual_y_ggplot <- function (
   # Add scales
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = y1$unit_prefix, percent = y1$percent),
+      labels = function(x) uhero_scale_nums(x, prefix = y1$unit_prefix %||% "", percent = y1$percent %||% FALSE),
       breaks = if (is.null(y1_breaks)) waiver() else y1_breaks,
       limits = if (is.null(y1_limits)) NULL else c(y1_limits[1], y1_limits[2]),
       sec.axis = sec_axis(
         transform = transformation_fns$transform,
-        labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix, percent = y2$percent),
+        labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix %||% "", percent = y2$percent %||% FALSE),
         breaks = if (is.null(y2_breaks)) waiver() else y2_breaks,
       ),
     )
@@ -339,8 +339,8 @@ uhero_draw_ggplot <- function(
     x_var,
     y_limits = NULL,
     chart_type = NULL,
-    percent = FALSE,
-    unit_prefix = "",
+    percent = NULL,
+    unit_prefix = NULL,
     ...
 ) {
   # Handle chart_type as named vector (per-series) or single type
@@ -366,7 +366,7 @@ uhero_draw_ggplot <- function(
   # Scales and theme
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = unit_prefix, percent = percent),
+      labels = function(x) uhero_scale_nums(x, prefix = unit_prefix %||% "", percent = percent %||% FALSE),
       breaks = if (is.null(y_breaks)) waiver() else y_breaks,
       limits = if (is.null(y_limits)) NULL else c(y_limits[1], y_limits[2])
     )
