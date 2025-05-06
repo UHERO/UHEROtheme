@@ -9,7 +9,7 @@ uhero_draw_ggplot(
   series,
   x_var,
   y_limits = NULL,
-  chart_type = "line",
+  chart_type = NULL,
   percent = FALSE,
   unit_prefix = "",
   ...
@@ -26,7 +26,7 @@ uhero_draw_ggplot(
 
 \item{chart_type}{A string or a vector indicating the chart type for each series. A single string like "bar" can be used to apply the bar chart type to all series.
 A vector such as c("line", "bar") or c("Col Name" = "line", "Col Name" = "bar") can be used to specify a type for each series. Current accepted chart type values
-are "line", "bar", and "col". The chart_type parameter defaults to "line".}
+are "line", "bar", and "col". Defaults to NULL. If not specified the plot will default to a line chart.}
 
 \item{percent}{A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.}
 

@@ -7,10 +7,10 @@
 uhero_draw_dual_y_ggplot(
   data,
   x_var,
-  y1 = list(series = NULL, chart_type = "line", limits = NULL, percent = FALSE,
-    unit_prefix = ""),
-  y2 = list(series = NULL, chart_type = "line", limits = NULL, percent = FALSE,
-    unit_prefix = ""),
+  y1 = list(series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix
+    = ""),
+  y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix
+    = ""),
   ...
 )
 }
@@ -23,7 +23,7 @@ uhero_draw_dual_y_ggplot(
 `series` A vector of string names (i.e. c("col_name")) corresponding to the columns in the data. Defaults to NULL
 `chart_type` A string, either "line" or "col", or a vector
 (i.e., c("col_name1" = line", "col_name2" = "bar")) to indicate how the series should be drawn.
-Defaults to "line".
+Defaults to NULL. If not specified the plot will default to a line chart.
 `limits` A vector of numbers c(min, max, step) indicating the min, max, and steps between axis
 labels. This is optional and defaults to NULL if not specified.
 `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.

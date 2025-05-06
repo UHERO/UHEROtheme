@@ -149,14 +149,14 @@ add_geom_bar <- function(plot, series_data, ...) {
   plot <- plot +
     geom_bar(
       data = series_data,
-      aes(y = .data$value, fill = .data$name), stat = "identity", ...)
+      aes(fill = .data$name), ...)
 
   plot
 }
 
 geom_function_map <- list(
   line = function (plot, data, ...) add_geom_line(plot, data, ...),
-  col = function (plot, data, ...) add_geom_bar(plot, data, ...),
+  col = function (plot, data, ...) add_geom_col(plot, data, ...),
   bar = function (plot, data, ...) add_geom_bar(plot, data, ...)
 )
 
@@ -188,7 +188,7 @@ validate_chart_types <- function(chart_types) {
 #' `series` A vector of string names (i.e. c("col_name")) corresponding to the columns in the data. Defaults to NULL
 #' `chart_type` A string, either "line" or "col", or a vector
 #' (i.e., c("col_name1" = line", "col_name2" = "bar")) to indicate how the series should be drawn.
-#' Defaults to "line".
+#' Defaults to NULL. If not specified the plot will default to a line chart.
 #' `limits` A vector of numbers c(min, max, step) indicating the min, max, and steps between axis
 #' labels. This is optional and defaults to NULL if not specified.
 #' `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.
@@ -223,10 +223,10 @@ uhero_draw_dual_y_ggplot <- function (
     data,
     x_var,
     y1 = list(
-      series = NULL, chart_type = "line", limits = NULL, percent = FALSE, unit_prefix = ""
+      series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix = ""
     ),
     y2 = list(
-      series = NULL, chart_type = "line", limits = NULL, percent = FALSE, unit_prefix = ""
+      series = NULL, chart_type = NULL, limits = NULL, percent = FALSE, unit_prefix = ""
     ),
     ...
 ) {
@@ -245,8 +245,8 @@ uhero_draw_dual_y_ggplot <- function (
   )
 
   # Handle chart_type as named vector (per-series) or single type
-  y1_chart_type <- normalize_chart_type(y1$chart_type, y1_series)
-  y2_chart_type <- normalize_chart_type(y2$chart_type, y2_series)
+  y1_chart_type <- normalize_chart_type(y1$chart_type %||% "line", y1_series)
+  y2_chart_type <- normalize_chart_type(y2$chart_type %||% "line", y2_series)
 
   # Check for valid chart type(s)
   validate_chart_types(c(unname(y1_chart_type), unname(y2_chart_type)))
@@ -308,7 +308,7 @@ uhero_draw_dual_y_ggplot <- function (
 #' @param y_limits A vector of numbers c(min, max, step) indicating the min, max, and steps between axis labels on the left axis. This is optional and defaults to NULL if not specified.
 #' @param chart_type A string or a vector indicating the chart type for each series. A single string like "bar" can be used to apply the bar chart type to all series.
 #' A vector such as c("line", "bar") or c("Col Name" = "line", "Col Name" = "bar") can be used to specify a type for each series. Current accepted chart type values
-#' are "line", "bar", and "col". The chart_type parameter defaults to "line".
+#' are "line", "bar", and "col". Defaults to NULL. If not specified the plot will default to a line chart.
 #' @param percent A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.
 #' @param unit_prefix A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
@@ -338,13 +338,13 @@ uhero_draw_ggplot <- function(
     series,
     x_var,
     y_limits = NULL,
-    chart_type = "line",
+    chart_type = NULL,
     percent = FALSE,
     unit_prefix = "",
     ...
 ) {
   # Handle chart_type as named vector (per-series) or single type
-  chart_type <- normalize_chart_type(chart_type, series)
+  chart_type <- normalize_chart_type(chart_type %||% "line", series)
 
   # Check for valid chart type(s)
   validate_chart_types(chart_type)

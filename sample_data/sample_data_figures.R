@@ -224,7 +224,7 @@ prefire_payrolls_plot2 <- uhero_draw_ggplot(
   series = c("Maui County", "All Other Counties"),
   x_var = "Perc Change Pre Fire",
   y_limits = c(-.2, .2, .1), # Specify the min and max of the y axis and the steps between labels
-  chart_type = "bar",
+  chart_type = "col",
   percent = TRUE,
   unit_prefix = "",
   position = "dodge2"
@@ -241,7 +241,7 @@ mortgages_plot2 <- uhero_draw_ggplot(
   data = mortgages,
   series = c("<=3%", "3.01%-4%", "4.01%-5%", "5.01%-6%", ">6%"),
   x_var = "Month",
-  chart_type = "bar",
+  chart_type = "col",
   percent = TRUE,
   position = "fill"
 )$plot
@@ -262,14 +262,12 @@ transactions_plot2 <- uhero_draw_dual_y_ggplot(
   x_var = "year",
   y1 = list(
     series = c("Condominium Transactions", "Single-family Transactions"),
-    chart_type = "line",
     limits = c(0, 15000, 5000),
     percent = FALSE,
     unit_prefix = "$"
   ),
   y2 = list(
     series = c("Interest Rate"),
-    chart_type = "line",
     limits = c(0, .1, .05),
     percent = TRUE
   )
