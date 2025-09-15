@@ -270,7 +270,7 @@ transactions_plot2 <- uhero_draw_dual_y_ggplot(
     series = c("Interest Rate"),
     limits = c(0, .1, .05)
     #percent = TRUE
-  )
+  ),
 )$plot
 
 # Use draw_fcast_layout function to preview how the chart would look in a UHERO Forecast report
