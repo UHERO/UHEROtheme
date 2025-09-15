@@ -161,16 +161,6 @@ geom_function_map <- list(
 )
 
 add_chart_geom <- function(series, chart_type, data, plot, ...) {
-  # grouped_series <- split(series, chart_type[series])  # group series by type
-  #
-  # for (geom_type in names(grouped_series)) {
-  #   s <- grouped_series[[geom_type]]
-  #   geom_func <- geom_function_map[[geom_type]]
-  #   series_data <- data %>% filter(.data$name %in% s)
-  #   plot <- geom_func(plot, series_data, ...)
-  # }
-  #
-  # plot
   # Use factor levels to determine draw order
   draw_order <- series
 
@@ -294,13 +284,6 @@ uhero_draw_dual_y_ggplot <- function (
 
   # series_colors <- get_series_colors(unique(rescaled_data_long$name), palette = "all")
   series_colors <- get_series_colors(levels(rescaled_data_long$name), palette = "all")
-
-  # Init Chart
-  # plot <- rescaled_data_long %>% ggplot(aes(x = !!x_sym, label = .data$name))
-  #
-  # # Add chart types
-  # plot <- add_chart_geom(y1_series, y1_chart_type, rescaled_data_long, plot, ...)
-  # plot <- add_chart_geom(y2_series, y2_chart_type, rescaled_data_long, plot, ...)
 
   # Initialize ggplot
   plot <- ggplot(rescaled_data_long, aes(x = !!x_sym, label = .data$name))
