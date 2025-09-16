@@ -173,7 +173,7 @@ geom_function_map <- list(
   bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
 )
 
-add_chart_geom <- function(series, chart_type, data, plot, ...) {
+add_chart_geom <- function(series, chart_type, data, plot, x_var = NULL, baseline = NULL, ...) {
   # Use factor levels to determine draw order
   draw_order <- series
 
@@ -184,9 +184,12 @@ add_chart_geom <- function(series, chart_type, data, plot, ...) {
     s <- geom_groups[[geom_type]]
     geom_func <- geom_function_map[[geom_type]]
     series_data <- data %>% filter(.data$name %in% s)
+
     if (geom_type == "col") {
-      plot <- geom_func(plot, series_data, ...)
+      # pass x_var and baseline for columns
+      plot <- geom_func(plot, series_data, x_var = x_var, baseline = baseline, ...)
     } else {
+      # do not pass x_var and baseline for other geoms like line or bar
       plot <- geom_func(plot, series_data, ...)
     }
   }
@@ -506,19 +509,22 @@ dynamic_legend_position <- function(data, x_var, y_var, buffer = 0.3) {
 #' add_forecast_shading(chart, 2013, 2015)
 #'}
 add_forecast_shading <- function(plot, min_x, max_x) {
-  plot <- plot +
+  # Convert Dates to numeric internally (days since epoch)
+  xmin_num <- as.numeric(as.Date(min_x))
+  xmax_num <- as.numeric(as.Date(max_x))
+
+  plot +
     annotate(
       "rect",
-      xmin = min_x,
-      xmax = max_x,
+      xmin = xmin_num,
+      xmax = xmax_num,
       ymin = -Inf,
       ymax = Inf,
-      alpha = .1,
+      alpha = 0.1,
       fill = uhero_colors('gray')
     )
-
-  plot
 }
+
 
 legend_theme <- function(pos, just) {
   theme(
