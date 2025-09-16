@@ -269,7 +269,7 @@ transactions_plot2 <- uhero_draw_dual_y_ggplot(
   y2 = list(
     series = c("Interest Rate"),
     limits = c(0, .1, .05)
-    #percent = TRUE
+    # percent = TRUE
   )
 )$plot
 
