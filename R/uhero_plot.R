@@ -185,7 +185,7 @@ add_chart_geom <- function(series, chart_type, data, plot, ...) {
     geom_func <- geom_function_map[[geom_type]]
     series_data <- data %>% filter(.data$name %in% s)
     if (geom_type == "col") {
-      plot <- geom_func(plot, series_data, x_var, ...)
+      plot <- geom_func(plot, series_data, ...)
     } else {
       plot <- geom_func(plot, series_data, ...)
     }
