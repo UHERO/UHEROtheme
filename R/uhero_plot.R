@@ -136,11 +136,24 @@ add_geom_line <- function(plot, series_data, ...) {
   plot
 }
 
-add_geom_col <- function(plot, series_data, ...) {
+add_geom_col <- function(plot, series_data, x_var, baseline = 0, ...) {
+  # Extract x-values (first column in series_data)
+  x_vals <- unique(series_data[[x_var]])
+  x_vals <- sort(x_vals)
+  bar_width <- min(diff(as.numeric(x_vals)), na.rm = TRUE) * 0.9  # 90% of spacing
+
   plot <- plot +
-    geom_col(
+    geom_rect(
       data = series_data,
-      aes(y = .data$value, fill = .data$name), ...)
+      aes(
+        xmin = as.numeric(.data[[x_var]]) - bar_width / 2,
+        xmax = as.numeric(.data[[x_var]]) + bar_width / 2,
+        ymin = pmin(.data$value, baseline),
+        ymax = pmax(.data$value, baseline),
+        fill = .data$name
+      ),
+      ...
+    )
 
   plot
 }
@@ -155,9 +168,9 @@ add_geom_bar <- function(plot, series_data, ...) {
 }
 
 geom_function_map <- list(
-  line = function (plot, data, ...) add_geom_line(plot, data, ...),
-  col = function (plot, data, ...) add_geom_col(plot, data, ...),
-  bar = function (plot, data, ...) add_geom_bar(plot, data, ...)
+  line = function(plot, data, ...) add_geom_line(plot, data, ...),
+  col = function(plot, data, x_var, ...) add_geom_col(plot, data, x_var, ...),
+  bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
 )
 
 add_chart_geom <- function(series, chart_type, data, plot, ...) {
@@ -171,9 +184,11 @@ add_chart_geom <- function(series, chart_type, data, plot, ...) {
     s <- geom_groups[[geom_type]]
     geom_func <- geom_function_map[[geom_type]]
     series_data <- data %>% filter(.data$name %in% s)
-
-    # Call geom with full group (so dodge works)
-    plot <- geom_func(plot, series_data, ...)
+    if (geom_type == "col") {
+      plot <- geom_func(plot, series_data, x_var, ...)
+    } else {
+      plot <- geom_func(plot, series_data, ...)
+    }
   }
 
   plot
@@ -273,6 +288,8 @@ uhero_draw_dual_y_ggplot <- function (
     pivot_longer(-all_of(x_var), names_to = "name", values_to = "value") %>%
     mutate(label = if_else(!!sym(x_var) == max(!!sym(x_var)), as.character(.data$name), NA_character_))
 
+  rescale_y2 <- transformation_fns$rescale
+
   # Use the series order as defined by the input order of y1$series and y2$series
   draw_order <- all_series
   rescaled_data_long$name <- factor(rescaled_data_long$name, levels = draw_order)
@@ -288,8 +305,15 @@ uhero_draw_dual_y_ggplot <- function (
   # Initialize ggplot
   plot <- ggplot(rescaled_data_long, aes(x = !!x_sym, label = .data$name))
 
-  # Add geoms in correct order
-  plot <- add_chart_geom(draw_order, all_chart_type, rescaled_data_long, plot, ...)
+  plot <- add_chart_geom(
+    series = draw_order,
+    chart_type = all_chart_type,
+    data = rescaled_data_long,
+    plot = plot,
+    x_var = x_var,
+    baseline = rescale_y2(0),
+    ...
+  )
 
   # Add scales
   plot <- plot +
