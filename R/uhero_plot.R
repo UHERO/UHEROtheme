@@ -173,12 +173,15 @@ geom_function_map <- list(
   bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
 )
 
+add_chart_geom <- function(series, chart_type, data, plot, ...) {
+  # Use factor levels to determine draw order
+  draw_order <- series
 
-add_chart_geom <- function(series, chart_type, data, plot, x_var, ...) {
-  grouped_series <- split(series, chart_type[series])  # group series by type
+  # Group by geom type while preserving order
+  geom_groups <- split(draw_order, chart_type[draw_order])
 
-  for (geom_type in names(grouped_series)) {
-    s <- grouped_series[[geom_type]]
+  for (geom_type in names(geom_groups)) {
+    s <- geom_groups[[geom_type]]
     geom_func <- geom_function_map[[geom_type]]
     series_data <- data %>% filter(.data$name %in% s)
     if (geom_type == "col") {
@@ -272,6 +275,9 @@ uhero_draw_dual_y_ggplot <- function (
   y1_chart_type <- normalize_chart_type(y1$chart_type, y1_series)
   y2_chart_type <- normalize_chart_type(y2$chart_type, y2_series)
 
+  all_series <- c(y1_series, y2_series)
+  all_chart_type <- c(y1_chart_type, y2_chart_type)
+
   # Check for valid chart type(s)
   validate_chart_types(c(unname(y1_chart_type), unname(y2_chart_type)))
 
@@ -284,31 +290,30 @@ uhero_draw_dual_y_ggplot <- function (
 
   rescale_y2 <- transformation_fns$rescale
 
+  # Use the series order as defined by the input order of y1$series and y2$series
+  draw_order <- all_series
+  rescaled_data_long$name <- factor(rescaled_data_long$name, levels = draw_order)
+
   legend_position <- dynamic_legend_position(rescaled_data_long, x_var = x_var, y_var = "value")
   y1_breaks <- set_breaks(y1_limits)
   y2_breaks <- set_breaks(y2_limits)
   x_sym <- sym(x_var)
 
-  series_colors <- get_series_colors(unique(rescaled_data_long$name), palette = "all")
+  # series_colors <- get_series_colors(unique(rescaled_data_long$name), palette = "all")
+  series_colors <- get_series_colors(levels(rescaled_data_long$name), palette = "all")
 
-  # Init Chart
-  plot <- rescaled_data_long %>% ggplot(aes(x = !!x_sym, label = .data$name))
+  # Initialize ggplot
+  plot <- ggplot(rescaled_data_long, aes(x = !!x_sym, label = .data$name))
 
-  # Add chart types
-  plot <- add_chart_geom(y1_series, y1_chart_type, rescaled_data_long, plot, ...)
-  # Pass in a baseline param for column charts plotted on right axis.
-  # Ensures that columns start at 0
-  if ("col" %in% unname(y2_chart_type)) {
-    plot <- add_chart_geom(
-      y2_series, y2_chart_type, rescaled_data_long, plot,
-      x_var, baseline = rescale_y2(0), ...
-    )
-  } else {
-    plot <- add_chart_geom(
-      y2_series, y2_chart_type, rescaled_data_long, plot,
-      x_var, ...
-    )
-  }
+  plot <- add_chart_geom(
+    series = draw_order,
+    chart_type = all_chart_type,
+    data = rescaled_data_long,
+    plot = plot,
+    x_var = x_var,
+    baseline = rescale_y2(0),
+    ...
+  )
 
   # Add scales
   plot <- plot +
@@ -390,7 +395,9 @@ uhero_draw_ggplot <- function(
   validate_chart_types(chart_type)
 
   # Prepare data
-  data_long <-format_data_long(data, x_var, series)
+  data_long <- format_data_long(data, x_var, series)
+  data_long$name <- factor(data_long$name, levels = series)
+
   x_sym <- sym(x_var)
   y_breaks <- set_breaks(y_limits)
   legend_position <- dynamic_legend_position(data_long, x_var = x_var, y_var = "value")

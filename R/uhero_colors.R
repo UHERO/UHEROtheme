@@ -93,6 +93,8 @@ apply_color_scales <- function(plot, chart_type, series_colors) {
   }
   if (use_fill) {
     plot <- plot + scale_fill_manual(values = series_colors)
+    # Add this line to sync text colors:
+    plot <- plot + scale_color_manual(values = series_colors)
   }
 
   plot
