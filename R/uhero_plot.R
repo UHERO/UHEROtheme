@@ -136,7 +136,9 @@ add_geom_line <- function(plot, series_data, ...) {
   plot
 }
 
-add_geom_col <- function(plot, series_data, x_var, baseline = 0, ...) {
+# uses geom_rect so that columns are drawn starting at 0 when a col type is
+# used for series plotted on a secondm, right axis
+add_geom_col_rect <- function(plot, series_data, x_var, baseline = 0, ...) {
   # Extract x-values (first column in series_data)
   x_vals <- unique(series_data[[x_var]])
   x_vals <- sort(x_vals)
@@ -158,6 +160,15 @@ add_geom_col <- function(plot, series_data, x_var, baseline = 0, ...) {
   plot
 }
 
+# used for normal col type charts (i.e. single axis)
+add_geom_col_regular <- function(plot, series_data, ...) {
+  plot <- plot +
+    geom_col(
+      data = series_data,
+      aes(y = .data$value, fill = .data$name), ...)
+  plot
+}
+
 add_geom_bar <- function(plot, series_data, ...) {
   plot <- plot +
     geom_bar(
@@ -169,11 +180,26 @@ add_geom_bar <- function(plot, series_data, ...) {
 
 geom_function_map <- list(
   line = function(plot, data, ...) add_geom_line(plot, data, ...),
-  col = function(plot, data, x_var, ...) add_geom_col(plot, data, x_var, ...),
+  col = function(plot, data, ...) add_geom_col_regular(plot, data, ...),
   bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
 )
 
-add_chart_geom <- function(series, chart_type, data, plot, x_var = NULL, baseline = NULL, ...) {
+geom_function_map_dual <- list(
+  line = function(plot, data, ...) add_geom_line(plot, data, ...),
+  col = function(plot, data, x_var, ...) add_geom_col_rect(plot, data, x_var, ...),
+  bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
+)
+
+add_chart_geom <- function(
+    series,
+    chart_type,
+    data,
+    plot,
+    x_var = NULL,
+    baseline = NULL,
+    geom_map = geom_function_map,
+    ...
+  ) {
   # Use factor levels to determine draw order
   draw_order <- series
 
@@ -182,14 +208,13 @@ add_chart_geom <- function(series, chart_type, data, plot, x_var = NULL, baselin
 
   for (geom_type in names(geom_groups)) {
     s <- geom_groups[[geom_type]]
-    geom_func <- geom_function_map[[geom_type]]
+    geom_func <- geom_map[[geom_type]]
     series_data <- data %>% filter(.data$name %in% s)
 
-    if (geom_type == "col") {
-      # pass x_var and baseline for columns
+    if (geom_type == "col" && identical(geom_map, geom_function_map_dual)) {
       plot <- geom_func(plot, series_data, x_var = x_var, baseline = baseline, ...)
     } else {
-      # do not pass x_var and baseline for other geoms like line or bar
+      # do not pass x_var and baseline for other geoms like line, bar, or single axis cols
       plot <- geom_func(plot, series_data, ...)
     }
   }
@@ -315,6 +340,7 @@ uhero_draw_dual_y_ggplot <- function (
     plot = plot,
     x_var = x_var,
     baseline = rescale_y2(0),
+    geom_map = geom_function_map_dual,
     ...
   )
 
@@ -411,7 +437,7 @@ uhero_draw_ggplot <- function(
   plot <- data_long %>% ggplot(aes(x = !!x_sym, label = .data$name))
 
   # Add series to chart
-  plot <- add_chart_geom(series, chart_type, data_long, plot, ...)
+  plot <- add_chart_geom(series, chart_type, data_long, plot, x_var = x_sym, geom_map = geom_function_map, ...)
 
   # Scales and theme
   plot <- plot +
