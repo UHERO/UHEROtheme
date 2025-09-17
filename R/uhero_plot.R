@@ -331,7 +331,7 @@ uhero_draw_dual_y_ggplot <- function (
   series_colors <- get_series_colors(levels(rescaled_data_long$name), palette = "all")
 
   # Initialize ggplot
-  plot <- ggplot(rescaled_data_long, aes(x = !!x_sym, label = .data$name))
+  plot <- ggplot(rescaled_data_long, aes(x = !!x_sym))
 
   plot <- add_chart_geom(
     series = draw_order,
@@ -434,7 +434,7 @@ uhero_draw_ggplot <- function(
   series_colors <- get_series_colors(unique(data_long$name), palette = "all")
 
   # Init chart
-  plot <- data_long %>% ggplot(aes(x = !!x_sym, label = .data$name))
+  plot <- data_long %>% ggplot(aes(x = !!x_sym))
 
   # Add series to chart
   plot <- add_chart_geom(series, chart_type, data_long, plot, x_var = x_sym, geom_map = geom_function_map, ...)
