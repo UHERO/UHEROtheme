@@ -11,10 +11,10 @@
 uhero_theme <- function(font_size = 9) {
   theme_minimal(
     base_size = font_size,
-    base_family = "OpenSans-Regular"
+    base_family = get_font("OpenSans-Regular", "sans")
   ) %+replace%
     theme(
-      text = element_text(family = "OpenSans-Regular", color = "#1D667F", size = 9),
+      text = element_text(family = get_font("OpenSans-Regular", "sans"), color = "#1D667F", size = 9),
       # Remove axis title and lines
       axis.title = element_blank(),
       axis.line = element_blank(),
@@ -28,6 +28,15 @@ uhero_theme <- function(font_size = 9) {
       panel.background = element_blank(),
       #legend.position = "none"
     )
+}
+
+get_font <- function(preferred = "OpenSans-Regular", fallback = "sans") {
+  available_fonts <- systemfonts::system_fonts()$family
+  if (preferred %in% available_fonts) {
+    preferred
+  } else {
+    fallback
+  }
 }
 
 
