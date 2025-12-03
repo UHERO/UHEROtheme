@@ -32,6 +32,7 @@ If the max value of the scale is larger than 1000, the tick labels will be scale
 For max values of at least 10^3 but less than 10^6, tick labels will be divided by 10^3 with "K" added to the label for the maximum value.
 For max values of at least 10^6 but less than 10^9, tick labels will be divided by 10^6 with "M" added to the label for the maximum value.
 For max values of at least 10^9 but less than 10^12, tick labels will be divided by 10^9 with "B" added to the label for the maximum value.
+For max values of at least 10^12 but less than 10^15, tick labels will be divided by 10^12 with "T" added to the label for the maximum value.
 }
 \examples{
 set.seed(1)

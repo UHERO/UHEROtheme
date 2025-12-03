@@ -13,6 +13,7 @@ mortgages <- read_excel(here("./sample_data/SampleData.xlsx"), sheet = 4)
 vis_market_forecast <- read_excel(here("./sample_data/SampleData.xlsx"), sheet = 5)
 vexp <- read_excel(here("./sample_data/SampleData.xlsx"), sheet = 6)
 transactions <- read_excel(here("./sample_data/SampleData.xlsx"), sheet = 7)
+inc_eq <- read_excel(here("./sample_data/SampleData.xlsx"), sheet = 8)
 
 # Convert data into long format
 nonfarm_payrolls_long <- nonfarm_payrolls %>%
@@ -58,7 +59,6 @@ nonfarm_payrolls_long$Date = as.Date(nonfarm_payrolls_long$Date, tz = "GMT")
 job_open_unemp_long$Date = as.Date(job_open_unemp_long$Date, tz = "GMT")
 mortgages_long$Month = as.Date(mortgages_long$Month, tz = "GMT")
 vis_market_forecast_long$Date = as.Date(vis_market_forecast_long$Date, tz = "GMT")
-
 
 # Figures
 nonfarm_payrolls_plot <- ggplot(nonfarm_payrolls_long, aes(x = Date, y = value, group = name, color = name)) +
@@ -271,6 +271,21 @@ transactions_plot2 <- uhero_draw_dual_y_ggplot(
     limits = c(0, .1, .05)
     #percent = TRUE
   ),
+)$plot
+
+inc_eq_plot <- uhero_draw_dual_y_ggplot(
+  data = inc_eq,
+  x_var = "Date",
+  y1 = list(
+    series = c("Corporate Equities & Mutual Fund Shares"),
+    limits = c(36 * 10^12, 52 * 10^12, 2 * 10 ^ 12),
+    unit_prefix = "$"
+  ),
+  y2 = list(
+    series = c("Disposable Personal Income"),
+    limits = c(20 * 10^12, 30 * 10^12, 1 * 10 ^ 12),
+    unit_prefix = "$"
+  )
 )$plot
 
 # Use draw_fcast_layout function to preview how the chart would look in a UHERO Forecast report
