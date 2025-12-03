@@ -47,6 +47,7 @@ get_font <- function(preferred = "OpenSans-Regular", fallback = "sans") {
 #' For max values of at least 10^3 but less than 10^6, tick labels will be divided by 10^3 with "K" added to the label for the maximum value.
 #' For max values of at least 10^6 but less than 10^9, tick labels will be divided by 10^6 with "M" added to the label for the maximum value.
 #' For max values of at least 10^9 but less than 10^12, tick labels will be divided by 10^9 with "B" added to the label for the maximum value.
+#' For max values of at least 10^12 but less than 10^15, tick labels will be divided by 10^12 with "T" added to the label for the maximum value.
 #'
 #' @param x Passed in from labels function.
 #' @param scale_limit Defaults to the max value of the scale.
@@ -69,12 +70,15 @@ uhero_scale_nums <- function(x, scale_limit = max(x, na.rm = TRUE), prefix = '',
   thou <- (scale_limit >= 10^3 && scale_limit < 10^6)
   mil <- (scale_limit >= 10^6 && scale_limit < 10^9)
   bil <- (scale_limit >= 10^9 && scale_limit < 10^12)
+  tril <- (scale_limit >= 10^12 && scale_limit < 10^15)
   suffix <- if (thou) {
     'K'
   } else if (mil) {
     'M'
   } else if (bil) {
     'B'
+  } else if (tril) {
+    'T'
   } else {
     ''
   }
@@ -89,6 +93,8 @@ uhero_scale_nums <- function(x, scale_limit = max(x, na.rm = TRUE), prefix = '',
     10^6
   } else if (bil) {
     10^9
+  } else if (tril) {
+    10^12
   } else {
     1
   }
