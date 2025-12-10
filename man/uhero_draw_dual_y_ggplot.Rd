@@ -8,9 +8,10 @@ uhero_draw_dual_y_ggplot(
   data,
   x_var,
   y1 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
-    = NULL),
+    = NULL, point_size = NULL),
   y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
-    = NULL),
+    = NULL, point_size = NULL),
+  bubble_legend = TRUE,
   ...
 )
 }
@@ -28,10 +29,14 @@ Defaults to NULL. If not specified the plot will default to a line chart.
 labels. This is optional and defaults to NULL if not specified.
 `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.
 `unit_prefix` A string to define any symbols that should be in front of the
-maximum axis label (i.e. "$"). Defaults to an empty string.}
+maximum axis label (i.e. "$"). Defaults to an empty string.
+`point_size` A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
+for points. Or use a data column name to create a bubble chart.}
 
 \item{y2}{A list specifying the series to be plotted on the secondary/right axis. Items in the list
 and their defaults are the same as the `y1` parameter}
+
+\item{bubble_legend}{Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.}
 
 \item{...}{Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.}
 }

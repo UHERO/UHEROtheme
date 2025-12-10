@@ -63,7 +63,7 @@ vexp_plot <- ggplot(vexp_long, aes(x = name, y = value, fill = Country)) +
 ### `uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot`
 
 `uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot` are helper functions to draw ggplot2 charts
-with the UHERO theme applied. Currently accepted charts types are "line", "bar", and "col".
+with the UHERO theme applied. Currently accepted charts types are "line", "bar", "col", and "scatter".
 The chart types apply the ggplot geoms `geom_line`, `geom_bar`, and `geom_col`
 - `geom_bar` Calculates bar heights using `stat_count`, i.e. counts the number of cases at each category
 - `geom_col` Uses `stat_idenity`, i.e. uses the y values to determine the height of the bar

@@ -250,7 +250,6 @@ vis_market_plot2 <- uhero_draw_ggplot(
   data = vis_market_forecast,
   series = c("US", "JP", "Rest of the World"),
   x_var = "Date",
-  chart_type = "line",
   percent = FALSE
 )$plot
 

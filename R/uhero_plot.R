@@ -136,6 +136,39 @@ add_geom_line <- function(plot, series_data, ...) {
   plot
 }
 
+# Normalize point_size per-series for scatter/bubble plots
+normalize_point_size <- function(point_size, series, default = 3) {
+
+  # Default: apply constant size to all series
+  if (is.null(point_size)) {
+    point_size <- default
+  }
+
+  # Case 1: single value (numeric or character) — recycle for all series
+  if (length(point_size) == 1 && is.null(names(point_size))) {
+    point_size <- rep(point_size, length(series))
+    names(point_size) <- series
+    return(point_size)
+  }
+
+  # Case 2: named vector — reorder/align with series
+  if (!is.null(names(point_size))) {
+    out <- rep(NA, length(series))
+    names(out) <- series
+    out[names(point_size)] <- point_size
+    return(out)
+  }
+
+  # Case 3: unnamed vector of same length
+  if (length(point_size) == length(series)) {
+    names(point_size) <- series
+    return(point_size)
+  }
+
+  stop("Invalid point_size: must be numeric, character, or named vector matching series.")
+}
+
+
 # uses geom_rect so that columns are drawn starting at 0 when a col type is
 # used for series plotted on a secondm, right axis
 add_geom_col_rect <- function(plot, series_data, x_var, baseline = 0, ...) {
@@ -178,16 +211,38 @@ add_geom_bar <- function(plot, series_data, ...) {
   plot
 }
 
+add_geom_point <- function(plot, series_data, point_size, show_size_legend, ...) {
+  if (is.character(point_size)) { #bubble chart
+    plot <- plot + geom_point(
+      data = series_data,
+      aes(y = .data$value, color = .data$name, size = .data$size_value),
+      show.legend = show_size_legend,
+      ...
+    )
+  } else {
+    plot <- plot + geom_point(
+      data = series_data,
+      aes(y = .data$value, color = .data$name),
+      size = point_size,
+      ...
+    )
+  }
+
+  plot
+}
+
 geom_function_map <- list(
   line = function(plot, data, ...) add_geom_line(plot, data, ...),
   col = function(plot, data, ...) add_geom_col_regular(plot, data, ...),
-  bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
+  bar = function(plot, data, ...) add_geom_bar(plot, data, ...),
+  scatter = function(plot, data, point_size, show_size_legend, ...) add_geom_point(plot, data, point_size, show_size_legend, ...)
 )
 
 geom_function_map_dual <- list(
   line = function(plot, data, ...) add_geom_line(plot, data, ...),
   col = function(plot, data, x_var, ...) add_geom_col_rect(plot, data, x_var, ...),
-  bar = function(plot, data, ...) add_geom_bar(plot, data, ...)
+  bar = function(plot, data, ...) add_geom_bar(plot, data, ...),
+  scatter = function(plot, data, point_size, show_size_legend, ...) add_geom_point(plot, data, point_size, show_size_legend, ...)
 )
 
 add_chart_geom <- function(
@@ -198,6 +253,8 @@ add_chart_geom <- function(
     x_var = NULL,
     baseline = NULL,
     geom_map = geom_function_map,
+    point_size = NULL,
+    show_size_legend = TRUE,
     ...
   ) {
   # Use factor levels to determine draw order
@@ -213,6 +270,18 @@ add_chart_geom <- function(
 
     if (geom_type == "col" && identical(geom_map, geom_function_map_dual)) {
       plot <- geom_func(plot, series_data, x_var = x_var, baseline = baseline, ...)
+    } else if (geom_type == "scatter") {
+      for (sname in s) {
+        this_data <- series_data %>% filter(.data$name == sname)
+
+        plot <- geom_func(
+          plot,
+          this_data,
+          point_size = point_size[[sname]],
+          show_size_legend = show_size_legend,
+          ...
+        )
+      }
     } else {
       # do not pass x_var and baseline for other geoms like line, bar, or single axis cols
       plot <- geom_func(plot, series_data, ...)
@@ -243,8 +312,11 @@ validate_chart_types <- function(chart_types) {
 #' `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.
 #' `unit_prefix` A string to define any symbols that should be in front of the
 #' maximum axis label (i.e. "$"). Defaults to an empty string.
+#' `point_size` A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
+#' for points. Or use a data column name to create a bubble chart.
 #' @param y2 A list specifying the series to be plotted on the secondary/right axis. Items in the list
 #' and their defaults are the same as the `y1` parameter
+#' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -272,11 +344,12 @@ uhero_draw_dual_y_ggplot <- function (
     data,
     x_var,
     y1 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, point_size = NULL
     ),
     y2 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, point_size = NULL
     ),
+    bubble_legend = TRUE,
     ...
 ) {
 
@@ -330,6 +403,43 @@ uhero_draw_dual_y_ggplot <- function (
   # series_colors <- get_series_colors(unique(rescaled_data_long$name), palette = "all")
   series_colors <- get_series_colors(levels(rescaled_data_long$name), palette = "all")
 
+  y1$point_size <- normalize_point_size(y1$point_size, y1_series, default = 3)
+  y2$point_size <- normalize_point_size(y2$point_size, y2_series, default = 3)
+
+  point_size <- c(y1$point_size, y2$point_size)
+
+  if (any(is.character(point_size))) {
+    bubble_series <- names(point_size)[is.character(point_size)]
+
+    rescaled_data_long <- rescaled_data_long %>%
+      rowwise() %>%
+      mutate(
+        size_value = {
+          if (!(name %in% bubble_series)) {
+            NA_real_
+          } else {
+            bubble_var <- point_size[[name]]
+
+            if (!bubble_var %in% names(data)) {
+              NA_real_
+            } else {
+              idx <- match(.data[[x_var]], data[[x_var]])
+              val <- data[[bubble_var]][idx]
+
+              if (is.null(val) || length(val) == 0 || is.na(idx)) {
+                NA_real_
+              } else {
+                val
+              }
+            }
+          }
+        }
+      ) %>%
+      ungroup() %>%
+      mutate(size_value = scales::rescale(size_value, to = c(0, 1)))
+  }
+
+
   # Initialize ggplot
   plot <- ggplot(rescaled_data_long, aes(x = !!x_sym))
 
@@ -341,8 +451,14 @@ uhero_draw_dual_y_ggplot <- function (
     x_var = x_var,
     baseline = rescale_y2(0),
     geom_map = geom_function_map_dual,
+    point_size = point_size,
+    show_size_legend = bubble_legend %||% TRUE,
     ...
   )
+
+  if (any(is.character(point_size))) {
+    plot <- plot + scale_size_continuous(range = c(2, 12), guide = if (bubble_legend) "legend" else "none")
+  }
 
   # Add scales
   plot <- plot +
@@ -383,6 +499,9 @@ uhero_draw_dual_y_ggplot <- function (
 #' are "line", "bar", and "col". Defaults to NULL. If not specified the plot will default to a line chart.
 #' @param percent A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.
 #' @param unit_prefix A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.
+#' @param point_size A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
+#' for points. Or use a data column name to create a bubble chart.
+#' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -413,6 +532,8 @@ uhero_draw_ggplot <- function(
     chart_type = NULL,
     percent = NULL,
     unit_prefix = NULL,
+    point_size = 3,
+    bubble_legend = TRUE,
     ...
 ) {
   unit_prefix <- unit_prefix %||% ""
@@ -433,11 +554,53 @@ uhero_draw_ggplot <- function(
 
   series_colors <- get_series_colors(unique(data_long$name), palette = "all")
 
+  point_size <- normalize_point_size(point_size, series, default = 3)
+
+  if (any(is.character(point_size))) {
+    bubble_series <- names(point_size)[is.character(point_size)]
+
+    data_long <- data_long %>%
+      rowwise() %>%
+      mutate(
+        size_value = {
+          if (!(name %in% bubble_series))
+            return(NA_real_)
+
+          bubble_var <- point_size[[name]]
+
+          if (!bubble_var %in% names(data))
+            return(NA_real_)
+
+          idx <- match(.data[[x_var]], data[[x_var]])
+          val <- data[[bubble_var]][idx]
+
+          if (is.null(val) || length(val) == 0 || is.na(idx))
+            NA_real_
+          else
+            val
+        }
+      ) %>%
+      ungroup() %>%
+      mutate(size_value = scales::rescale(size_value, to = c(0, 1)))
+  }
+
   # Init chart
   plot <- data_long %>% ggplot(aes(x = !!x_sym))
 
   # Add series to chart
-  plot <- add_chart_geom(series, chart_type, data_long, plot, x_var = x_sym, geom_map = geom_function_map, ...)
+  plot <- add_chart_geom(series,
+                         chart_type,
+                         data_long,
+                         plot,
+                         x_var = x_sym,
+                         geom_map = geom_function_map,
+                         point_size = point_size,
+                         show_size_legend = bubble_legend %||% TRUE,
+                         ...)
+
+  if (any(is.character(point_size))) {
+    plot <- plot + scale_size_continuous(range = c(2, 12), guide = if (bubble_legend) "legend" else "none")
+  }
 
   # Scales and theme
   plot <- plot +
