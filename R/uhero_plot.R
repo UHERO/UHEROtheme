@@ -653,15 +653,11 @@ dynamic_legend_position <- function(data, x_var, y_var, buffer = 0.3) {
 #' add_forecast_shading(chart, 2013, 2015)
 #'}
 add_forecast_shading <- function(plot, min_x, max_x) {
-  # Convert Dates to numeric internally (days since epoch)
-  xmin_num <- as.numeric(as.Date(min_x))
-  xmax_num <- as.numeric(as.Date(max_x))
-
   plot +
     annotate(
       "rect",
-      xmin = xmin_num,
-      xmax = xmax_num,
+      xmin = as.Date(min_x),
+      xmax = as.Date(max_x),
       ymin = -Inf,
       ymax = Inf,
       alpha = 0.1,
