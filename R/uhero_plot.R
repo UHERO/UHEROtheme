@@ -155,29 +155,65 @@ normalize_point_size <- function(point_size, series, default = 3) {
   stop("Invalid point_size: must be numeric, character, or named vector matching series.")
 }
 
+as_numeric_x <- function(x) {
+  if (is.factor(x)) {
+    return(as.numeric(x))
+  }
+
+  if (is.character(x)) {
+    return(as.numeric(factor(x, levels = unique(x))))
+  }
+
+  if (is.numeric(x) || inherits(x, c("Date", "POSIXct"))) {
+    # Keep numeric and Date/Datetime as-is
+    return(x)
+  }
+
+  rlang::abort(
+    "Unsupported x_var type in add_geom_col_rect()",
+    class = "add_geom_col_rect_invalid_x_type"
+  )
+}
+
 
 # uses geom_rect so that columns are drawn starting at 0 when a col type is
-# used for series plotted on a secondm, right axis
+# used for series plotted on a second, right axis
 add_geom_col_rect <- function(plot, series_data, x_var, baseline = 0, ...) {
-  # Extract x-values (first column in series_data)
-  x_vals <- unique(series_data[[x_var]])
-  x_vals <- sort(x_vals)
-  bar_width <- min(diff(as.numeric(x_vals)), na.rm = TRUE) * 0.9  # 90% of spacing
 
-  plot <- plot +
-    geom_rect(
-      data = series_data,
-      aes(
-        xmin = as.numeric(.data[[x_var]]) - bar_width / 2,
-        xmax = as.numeric(.data[[x_var]]) + bar_width / 2,
-        ymin = pmin(.data$value, baseline),
-        ymax = pmax(.data$value, baseline),
-        fill = .data$name
-      ),
-      ...
+  x_raw <- series_data[[x_var]]
+  x_num <- as_numeric_x(x_raw)
+
+  # Compute spacing-based width
+  x_unique <- sort(unique(x_num))
+
+  width <- if (length(x_unique) > 1) {
+    min(diff(x_unique), na.rm = TRUE) * 0.9
+  } else {
+    0.9
+  }
+
+  rect_data <- series_data %>%
+    mutate(
+      xmin = x_num - width / 2,
+      xmax = x_num + width / 2,
+      ymin = pmin(.data$value, baseline),
+      ymax = pmax(.data$value, baseline)
     )
 
-  plot
+  plot +
+    geom_blank(data = series_data, aes(x = .data[[x_var]])) +
+    geom_rect(
+      data = rect_data,
+      aes(
+        xmin = .data$xmin,
+        xmax = .data$xmax,
+        ymin = .data$ymin,
+        ymax = .data$ymax,
+        fill = .data$name
+      ),
+      inherit.aes = FALSE,
+      ...
+    )
 }
 
 # used for normal col type charts (i.e. single axis)
@@ -241,7 +277,7 @@ apply_bubble_sizes <- function(long_data, data, x_var, point_size) {
   # Join long_data with bubble_lookup on x_var and name
   long_data <- long_data %>%
     left_join(bubble_lookup, by = c(x_var, "name")) %>%
-    mutate(size_value = scales::rescale(size_value, to = c(0, 1)))
+    mutate(size_value = scales::rescale(.data$size_value, to = c(0, 1)))
 
   long_data
 }
