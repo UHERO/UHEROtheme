@@ -365,6 +365,7 @@ validate_chart_types <- function(chart_types) {
 #' @param y2 A list specifying the series to be plotted on the secondary/right axis. Items in the list
 #' and their defaults are the same as the `y1` parameter
 #' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
+#' @param x_order Optional. Accepts a vector of strings defining the order of a categorical x axis.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -398,6 +399,7 @@ uhero_draw_dual_y_ggplot <- function (
       series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, point_size = NULL
     ),
     bubble_legend = TRUE,
+    x_order = NULL,
     ...
 ) {
 
@@ -436,6 +438,19 @@ uhero_draw_dual_y_ggplot <- function (
     rescaled_data %>%
     pivot_longer(-all_of(x_var), names_to = "name", values_to = "value") %>%
     mutate(label = if_else(!!sym(x_var) == max(!!sym(x_var)), as.character(.data$name), NA_character_))
+
+  if (!is.null(x_order)) {
+    rescaled_data_long[[x_var]] <- factor(
+      rescaled_data_long[[x_var]],
+      levels = x_order
+    )
+  } else if (is.character(data[[x_var]])) {
+    x_levels <- unique(data[[x_var]])
+    rescaled_data_long[[x_var]] <- factor(
+      rescaled_data_long[[x_var]],
+      levels = x_levels
+    )
+  }
 
   rescale_y2 <- transformation_fns$rescale
 
@@ -519,6 +534,7 @@ uhero_draw_dual_y_ggplot <- function (
 #' @param point_size A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
 #' for points. Or use a data column name to create a bubble chart.
 #' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
+#' @param x_order Optional. Accepts a vector of strings defining the order of a categorical x axis.
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -551,6 +567,7 @@ uhero_draw_ggplot <- function(
     unit_prefix = NULL,
     point_size = 3,
     bubble_legend = TRUE,
+    x_order = NULL,
     ...
 ) {
   unit_prefix <- unit_prefix %||% ""
@@ -563,6 +580,21 @@ uhero_draw_ggplot <- function(
 
   # Prepare data
   data_long <- format_data_long(data, x_var, series)
+  if (!is.null(x_order)) {
+
+    data_long[[x_var]] <- factor(
+      data_long[[x_var]],
+      levels = x_order
+    )
+
+  } else if (is.character(data[[x_var]])) {
+
+    data_long[[x_var]] <- factor(
+      data_long[[x_var]],
+      levels = unique(data[[x_var]])
+    )
+
+  }
   data_long$name <- factor(data_long$name, levels = series)
 
   x_sym <- sym(x_var)

@@ -12,6 +12,7 @@ uhero_draw_dual_y_ggplot(
   y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
     = NULL, point_size = NULL),
   bubble_legend = TRUE,
+  x_order = NULL,
   ...
 )
 }
@@ -37,6 +38,8 @@ for points. Or use a data column name to create a bubble chart.}
 and their defaults are the same as the `y1` parameter}
 
 \item{bubble_legend}{Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.}
+
+\item{x_order}{Optional. Accepts a vector of strings defining the order of a categorical x axis.}
 
 \item{...}{Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.}
 }
