@@ -85,18 +85,19 @@ get_series_colors <- function(series_names, palette = "all") {
 }
 
 apply_color_scales <- function(plot, chart_type, series_colors) {
-  use_fill <- any(chart_type %in% c("col", 'bar', "area"))
-  use_color <- any(chart_type %in% c("line", "point", "step"))
-
-  if (use_color) {
-    plot <- plot + scale_color_manual(values = series_colors)
-  }
-  if (use_fill) {
+  uses_fill <- any(sapply(plot$layers, function(l) {
+    "fill" %in% names(l$mapping)
+  }))
+  uses_color <- any(sapply(plot$layers, function(l) {
+    "colour" %in% names(l$mapping) ||
+      "color"  %in% names(l$mapping)
+  }))
+  if (uses_fill) {
     plot <- plot + scale_fill_manual(values = series_colors)
-    # Add this line to sync text colors:
+  }
+  if (uses_color) {
     plot <- plot + scale_color_manual(values = series_colors)
   }
-
   plot
 }
 
