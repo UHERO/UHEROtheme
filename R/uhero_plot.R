@@ -439,6 +439,8 @@ uhero_draw_dual_y_ggplot <- function (
     pivot_longer(-all_of(x_var), names_to = "name", values_to = "value") %>%
     mutate(label = if_else(!!sym(x_var) == max(!!sym(x_var)), as.character(.data$name), NA_character_))
 
+  rescaled_data_long$x_num <- as_numeric_x(rescaled_data_long[[x_var]])
+
   if (!is.null(x_order)) {
     rescaled_data_long[[x_var]] <- factor(
       rescaled_data_long[[x_var]],
@@ -473,14 +475,14 @@ uhero_draw_dual_y_ggplot <- function (
   rescaled_data_long <- apply_bubble_sizes(rescaled_data_long, data, x_var, point_size)
 
   # Initialize ggplot
-  plot <- ggplot(rescaled_data_long, aes(x = !!x_sym))
+  plot <- ggplot(rescaled_data_long, aes(x = .data$x_num))
 
   plot <- add_chart_geom(
     series = draw_order,
     chart_type = all_chart_type,
     data = rescaled_data_long,
     plot = plot,
-    x_var = x_var,
+    x_var = "x_num",
     baseline = rescale_y2(0),
     dual = TRUE,
     point_size = point_size,
@@ -503,6 +505,12 @@ uhero_draw_dual_y_ggplot <- function (
         labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix, percent = y2$percent),
         breaks = if (is.null(y2_breaks)) waiver() else y2_breaks,
       ),
+    )
+
+  plot <- plot +
+    scale_x_continuous(
+      breaks = unique(rescaled_data_long$x_num),
+      labels = unique(rescaled_data_long[[x_var]])
     )
 
   # Add colors the themes
