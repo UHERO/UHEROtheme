@@ -24,7 +24,7 @@ parse_limits <- function(limits, series) {
 set_breaks <- function(limits) {
   breaks <- NULL
   if (!is.null(limits)) {
-    breaks <- seq(limits[1], limits[2], by = limits[3])
+    breaks <- round(seq(limits[1], limits[2], by = limits[3]), digits = 10)
   }
 
   breaks
@@ -497,12 +497,20 @@ uhero_draw_dual_y_ggplot <- function (
   # Add scales
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = y1$unit_prefix, percent = y1$percent),
+      labels = function(x) uhero_scale_nums(
+        x,
+        scale_limit = if (!is.null(y1_limits)) y1_limits[2] else max(x, na.rm = TRUE),
+        prefix = y1$unit_prefix,
+        percent = y1$percent),
       breaks = if (is.null(y1_breaks)) waiver() else y1_breaks,
       limits = if (is.null(y1_limits)) NULL else c(y1_limits[1], y1_limits[2]),
       sec.axis = sec_axis(
         transform = transformation_fns$transform,
-        labels = function(x) uhero_scale_nums(x, prefix = y2$unit_prefix, percent = y2$percent),
+        labels = function(x) uhero_scale_nums(
+          x,
+          scale_limit = if (!is.null(y2_limits)) y2_limits[2] else max(x, na.rm = TRUE),
+          prefix = y2$unit_prefix,
+          percent = y2$percent),
         breaks = if (is.null(y2_breaks)) waiver() else y2_breaks,
       ),
     )
@@ -636,7 +644,11 @@ uhero_draw_ggplot <- function(
   # Scales and theme
   plot <- plot +
     scale_y_continuous(
-      labels = function(x) uhero_scale_nums(x, prefix = unit_prefix, percent = percent),
+      labels = function(x) uhero_scale_nums(
+        x,
+        scale_limit = if (!is.null(y_limits)) y_limits[2] else max(x, na.rm = TRUE),
+        prefix = unit_prefix,
+        percent = percent),
       breaks = if (is.null(y_breaks)) waiver() else y_breaks,
       limits = if (is.null(y_limits)) NULL else c(y_limits[1], y_limits[2])
     )
