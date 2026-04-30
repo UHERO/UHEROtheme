@@ -284,11 +284,11 @@ apply_bubble_sizes <- function(long_data, data, x_var, point_size) {
 
 geom_dispatch <- function(type, dual = FALSE) {
   switch(type,
-    line = add_geom_line,
-    bar = add_geom_bar,
-    col = if (dual) add_geom_col_rect else add_geom_col_regular,
-    scatter = add_geom_point,
-    stop("Unknown geom type:", type)
+         line = add_geom_line,
+         bar = add_geom_bar,
+         col = if (dual) add_geom_col_rect else add_geom_col_regular,
+         scatter = add_geom_point,
+         stop("Unknown geom type:", type)
   )
 }
 
@@ -303,7 +303,7 @@ add_chart_geom <- function(
     point_size = NULL,
     show_size_legend = TRUE,
     ...
-  ) {
+) {
   # Use factor levels to determine draw order
   draw_order <- series
 
@@ -475,7 +475,11 @@ uhero_draw_dual_y_ggplot <- function (
   rescaled_data_long <- apply_bubble_sizes(rescaled_data_long, data, x_var, point_size)
 
   # Initialize ggplot
-  plot <- ggplot(rescaled_data_long, aes(x = .data$x_num))
+  if (inherits(data[[x_var]], c("Date", "POSIXct"))) {
+    plot <- ggplot(rescaled_data_long, aes(x = .data[[x_var]]))
+  } else {
+    plot <- ggplot(rescaled_data_long, aes(x = .data$x_num))
+  }
 
   plot <- add_chart_geom(
     series = draw_order,
@@ -515,11 +519,13 @@ uhero_draw_dual_y_ggplot <- function (
       ),
     )
 
-  plot <- plot +
-    scale_x_continuous(
-      breaks = unique(rescaled_data_long$x_num),
-      labels = unique(rescaled_data_long[[x_var]])
-    )
+  if (!inherits(data[[x_var]], c("Date", "POSIXct"))) {
+    plot <- plot +
+      scale_x_continuous(
+        breaks = unique(rescaled_data_long$x_num),
+        labels = unique(rescaled_data_long[[x_var]])
+      )
+  }
 
   # Add colors the themes
   plot <- apply_color_scales(plot, c(y1_chart_type, y2_chart_type), series_colors)
