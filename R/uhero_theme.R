@@ -14,11 +14,12 @@ uhero_theme <- function(font_size = 9) {
     base_family = get_font("OpenSans-Regular", "sans")
   ) %+replace%
     theme(
-      text = element_text(family = get_font("OpenSans-Regular", "sans"), color = "#1D667F", size = 9),
+      text = element_text(family = get_font("OpenSans-Regular", "sans"), color = "#505050", size = 8),
       # Remove axis title and lines
-      axis.title = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_text(angle = 0, vjust = 1, hjust = 0, size = 7.2),
       axis.line = element_blank(),
-      #axis.text = element_text(family = "opensans", color = "#505050", size = 9),
+      # axis.text = element_text(family = "opensans", color = "#505050", size = 9),
       # Remove axis tick lines
       axis.ticks = element_blank(),
      # legend.key = element_blank(),
