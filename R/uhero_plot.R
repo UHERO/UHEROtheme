@@ -360,6 +360,7 @@ validate_chart_types <- function(chart_types) {
 #' `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.
 #' `unit_prefix` A string to define any symbols that should be in front of the
 #' maximum axis label (i.e. "$"). Defaults to an empty string.
+#' `unit_postfix` A string to add addtional unit labeling for the y axis.
 #' `point_size` A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
 #' for points. Or use a data column name to create a bubble chart.
 #' @param y2 A list specifying the series to be plotted on the secondary/right axis. Items in the list
@@ -393,10 +394,10 @@ uhero_draw_dual_y_ggplot <- function (
     data,
     x_var,
     y1 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, point_size = NULL
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, unit_postfix = NULL, point_size = NULL
     ),
     y2 = list(
-      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, point_size = NULL
+      series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix = NULL, unit_postfix = NULL, point_size = NULL
     ),
     bubble_legend = TRUE,
     x_order = NULL,
@@ -413,6 +414,8 @@ uhero_draw_dual_y_ggplot <- function (
   y2$percent <- ifelse(is.null(y2$percent), FALSE, y2$percent)
   y1$unit_prefix <- y1$unit_prefix %||% ""
   y2$unit_prefix <- y2$unit_prefix %||% ""
+  y1$unit_postfix <- y1$unit_postfix %||% ""
+  y2$unit_postfix <- y2$unit_postfix %||% ""
 
   transformation_fns <- dual_y_axis_transform(
     data,
@@ -501,6 +504,7 @@ uhero_draw_dual_y_ggplot <- function (
   # Add scales
   plot <- plot +
     scale_y_continuous(
+      name = if (y1$unit_postfix == "") NULL else y1$unit_postfix,
       labels = function(x) uhero_scale_nums(
         x,
         scale_limit = if (!is.null(y1_limits)) y1_limits[2] else max(x, na.rm = TRUE),
@@ -509,6 +513,7 @@ uhero_draw_dual_y_ggplot <- function (
       breaks = if (is.null(y1_breaks)) waiver() else y1_breaks,
       limits = if (is.null(y1_limits)) NULL else c(y1_limits[1], y1_limits[2]),
       sec.axis = sec_axis(
+        name = if (y2$unit_postfix == "") NULL else y2$unit_postfix,
         transform = transformation_fns$transform,
         labels = function(x) uhero_scale_nums(
           x,
@@ -553,6 +558,7 @@ uhero_draw_dual_y_ggplot <- function (
 #' are "line", "bar", and "col". Defaults to NULL. If not specified the plot will default to a line chart.
 #' @param percent A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.
 #' @param unit_prefix A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.
+#' @param unit_postfix A string to add addtional unit labeling for the y axis.
 #' @param point_size A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
 #' for points. Or use a data column name to create a bubble chart.
 #' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
@@ -587,12 +593,14 @@ uhero_draw_ggplot <- function(
     chart_type = NULL,
     percent = NULL,
     unit_prefix = NULL,
+    unit_postfix = NULL,
     point_size = 3,
     bubble_legend = TRUE,
     x_order = NULL,
     ...
 ) {
   unit_prefix <- unit_prefix %||% ""
+  unit_postfix <- unit_postfix %||% ""
   percent <- ifelse(is.null(percent), FALSE, percent)
   # Handle chart_type as named vector (per-series) or single type
   chart_type <- normalize_chart_type(chart_type %||% "line", series)
@@ -650,6 +658,7 @@ uhero_draw_ggplot <- function(
   # Scales and theme
   plot <- plot +
     scale_y_continuous(
+      name = if (unit_postfix == "") NULL else unit_postfix,
       labels = function(x) uhero_scale_nums(
         x,
         scale_limit = if (!is.null(y_limits)) y_limits[2] else max(x, na.rm = TRUE),

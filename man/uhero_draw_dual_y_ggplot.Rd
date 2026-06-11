@@ -8,9 +8,9 @@ uhero_draw_dual_y_ggplot(
   data,
   x_var,
   y1 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
-    = NULL, point_size = NULL),
+    = NULL, unit_postfix = NULL, point_size = NULL),
   y2 = list(series = NULL, chart_type = NULL, limits = NULL, percent = NULL, unit_prefix
-    = NULL, point_size = NULL),
+    = NULL, unit_postfix = NULL, point_size = NULL),
   bubble_legend = TRUE,
   x_order = NULL,
   ...
@@ -31,6 +31,7 @@ labels. This is optional and defaults to NULL if not specified.
 `percent` A boolean indicating if the axis is in percentages. Defaults to FALSE.
 `unit_prefix` A string to define any symbols that should be in front of the
 maximum axis label (i.e. "$"). Defaults to an empty string.
+`unit_postfix` A string to add addtional unit labeling for the y axis.
 `point_size` A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
 for points. Or use a data column name to create a bubble chart.}
 

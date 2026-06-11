@@ -12,6 +12,7 @@ uhero_draw_ggplot(
   chart_type = NULL,
   percent = NULL,
   unit_prefix = NULL,
+  unit_postfix = NULL,
   point_size = 3,
   bubble_legend = TRUE,
   x_order = NULL,
@@ -34,6 +35,8 @@ are "line", "bar", and "col". Defaults to NULL. If not specified the plot will d
 \item{percent}{A boolean indicating if the maximum y axis label should be marked with a "\%" sign. Defaults to FALSE.}
 
 \item{unit_prefix}{A string to define any symbols that should be in front of the maximum y axis label (i.e. "$"). Defaults to an empty string.}
+
+\item{unit_postfix}{A string to add addtional unit labeling for the y axis.}
 
 \item{point_size}{A number or string specifying the point size for a scatter/bubble plot. Defaults to 3. Use a number to set a fixed size
 for points. Or use a data column name to create a bubble chart.}
