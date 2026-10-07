@@ -3,12 +3,13 @@
 #' Modifies the ggplot minimal theme to fit the style used for UHERO reports/presentations.
 #'
 #' @param font_size A number indicating the font size to be used by ggplot's element_text. Defaults to 9.
+#' @param bg Background fill for the plot. Defaults to "transparent".
 #'
 #' @export
 #'
 #' @examples
 #' plot <- ggplot2::ggplot(ggplot2::mpg) + uhero_theme()
-uhero_theme <- function(font_size = 9) {
+uhero_theme <- function(font_size = 9, bg = "transparent") {
   theme_minimal(
     base_size = font_size,
     base_family = get_font("OpenSans-Regular", "sans")
@@ -27,6 +28,10 @@ uhero_theme <- function(font_size = 9) {
       panel.grid = element_blank(),
       # Remove background panel
       panel.background = element_blank(),
+      plot.background   = element_rect(fill = bg, colour = NA),
+      legend.background = element_rect(fill = "transparent", colour = NA),
+      legend.box.background = element_rect(fill = "transparent", colour = NA),
+      legend.key        = element_rect(fill = "transparent", colour = NA)
       #legend.position = "none"
     )
 }

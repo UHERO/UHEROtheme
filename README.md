@@ -72,6 +72,9 @@ accept a `point_size` parameter. If omitted, the plot defaults to using a fixed 
 a number value to change the fixed size or a column name to dynamically scale the points for a bubble plot.
 Note: Additional parameters like `stat = "identity"` can be passed to the draw ggplot functions
 to allow bar charts to draw the same as a col. See code block example below or run
+Stlying note: When a legend is drawn, the background color of the legend box defaults to transparent. If the legend overlaps any charts elements,
+the `uhero_draw_ggplot` and `uhero_draw_dual_y_ggplot` functions accept a `legend_bg` parameter to add a legend background for legibility.
+Example: `uhero_draw_ggplot(df, series = "y", x_var = "x", legend_bg = alpha("white", 0.7))`
 `?uhero_draw_ggplot` / `?uhero_draw_dual_y_ggplot` for more details on the parameters.
 
 ```
@@ -251,6 +254,7 @@ draw_report_layout(plot)
 - `w` Width of the exported image, defaults to 4.5
 - `h` Height of the exported image, defaults to 2.45
 - `u` A string for the units, defaults to "in" for inches
+- `bg` Background color. Defaults to "transparent". Replace with a string like "white" for a solid background, or NULL to keep the background set by the plot's theme.
 - `...` Additional parameters that can be passed to ggplot2::ggsave
   If exporting for use in a forecast layout, please use either `.svg`, `.pdf`, or `.eps`
   as the file extension. The dimensions should be 4.5 x 2.45 inches, but the `w` and `h`
@@ -272,6 +276,7 @@ export_fcast_layout('plot.svg', plot)
 - `w` Width of the exported image, defaults to 5.6931
 - `h` Height of the exported image, defaults to 4
 - `u` A string for the units, defaults to "in" for inches
+- `bg` Background color. Defaults to "transparent". Replace with a string like "white" for a solid background, or NULL to keep the background set by the plot's theme.
 - `...` Additional parameters that can be passed to ggplot2::ggsave
   If exporting for use in a report layout, please use either `.svg`, `.pdf`, or `.eps`
   as the file extension. The dimensions should be 5.6931 x 4 inches, but the `w` and `h`
@@ -293,6 +298,7 @@ export_report_layout('plot.svg', plot)
 - `w` Width of the exported image, defaults to 1920
 - `h` Height of the exported image, defaults to 1080
 - `u` A string for the units, defaults to "px" for pixels
+- `bg` Background color. Defaults to "transparent". Replace with a string like "white" for a solid background, or NULL to keep the background set by the plot's theme.
 - `...` Additional parameters that can be passed to ggplot2::ggsave
 
 ```

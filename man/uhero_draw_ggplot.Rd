@@ -15,6 +15,7 @@ uhero_draw_ggplot(
   unit_postfix = NULL,
   point_size = 3,
   bubble_legend = TRUE,
+  legend_bg = "transparent",
   x_order = NULL,
   ...
 )
@@ -42,6 +43,9 @@ are "line", "bar", and "col". Defaults to NULL. If not specified the plot will d
 for points. Or use a data column name to create a bubble chart.}
 
 \item{bubble_legend}{Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.}
+
+\item{legend_bg}{Background fill for the legend. Defaults to "transparent".
+If the legend overlaps the data, use e.g. alpha("white", 0.7) or "white".}
 
 \item{x_order}{Optional. Accepts a vector of strings defining the order of a categorical x axis.}
 

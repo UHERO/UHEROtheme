@@ -367,6 +367,8 @@ validate_chart_types <- function(chart_types) {
 #' and their defaults are the same as the `y1` parameter
 #' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
 #' @param x_order Optional. Accepts a vector of strings defining the order of a categorical x axis.
+#' @param legend_bg Background fill for the legend. Defaults to "transparent".
+#' If the legend overlaps the data, use e.g. alpha("white", 0.7) or "white".
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -401,6 +403,7 @@ uhero_draw_dual_y_ggplot <- function (
     ),
     bubble_legend = TRUE,
     x_order = NULL,
+    legend_bg = "transparent",
     ...
 ) {
 
@@ -535,7 +538,7 @@ uhero_draw_dual_y_ggplot <- function (
   # Add colors the themes
   plot <- apply_color_scales(plot, c(y1_chart_type, y2_chart_type), series_colors)
   plot <- plot + uhero_theme() +
-    legend_theme(legend_position$pos, legend_position$just)
+    legend_theme(legend_position$pos, legend_position$just, bg = legend_bg)
 
   structure(
     list(
@@ -563,6 +566,8 @@ uhero_draw_dual_y_ggplot <- function (
 #' for points. Or use a data column name to create a bubble chart.
 #' @param bubble_legend Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.
 #' @param x_order Optional. Accepts a vector of strings defining the order of a categorical x axis.
+#' @param legend_bg Background fill for the legend. Defaults to "transparent".
+#' If the legend overlaps the data, use e.g. alpha("white", 0.7) or "white".
 #' @param ... Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.
 #'
 #' @returns A structure with the plot and scaled data used in the plot
@@ -596,6 +601,7 @@ uhero_draw_ggplot <- function(
     unit_postfix = NULL,
     point_size = 3,
     bubble_legend = TRUE,
+    legend_bg = "transparent",
     x_order = NULL,
     ...
 ) {
@@ -669,7 +675,7 @@ uhero_draw_ggplot <- function(
     )
   plot <- apply_color_scales(plot, chart_type, series_colors)
   plot <- plot +  uhero_theme() +
-    legend_theme(legend_position$pos, legend_position$just)
+    legend_theme(legend_position$pos, legend_position$just, bg = legend_bg)
 
   structure(
     list(
@@ -769,11 +775,11 @@ add_forecast_shading <- function(plot, min_x, max_x) {
 }
 
 
-legend_theme <- function(pos, just) {
+legend_theme <- function(pos, just, bg = "transparent") {
   theme(
     legend.position = pos,
     legend.justification = just,
-    legend.background = element_rect(fill = alpha("white", 0.7), color = NA),
+    legend.background = element_rect(fill = bg, color = NA),
     legend.title = element_blank()
   )
 }

@@ -4,7 +4,15 @@
 \alias{export_report_layout}
 \title{Export chart for UHERO report layout}
 \usage{
-export_report_layout(file_name, plot, w = 5.6931, h = 4, u = "in", ...)
+export_report_layout(
+  file_name,
+  plot,
+  w = 5.6931,
+  h = 4,
+  u = "in",
+  bg = "transparent",
+  ...
+)
 }
 \arguments{
 \item{file_name}{A string for the file name, including the extension.}
@@ -16,6 +24,9 @@ export_report_layout(file_name, plot, w = 5.6931, h = 4, u = "in", ...)
 \item{h}{Integer - height of the exported image, defaults to 4}
 
 \item{u}{A string for the units, defaults to "in" for inches}
+
+\item{bg}{Background color. Defaults to "transparent". Use e.g. "white" for a
+solid background, or NULL to keep the background set by the plot's theme.}
 
 \item{...}{Additional parameters that can be passed to ggplot2::ggsave}
 }

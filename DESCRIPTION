@@ -1,7 +1,7 @@
 Package: UHEROtheme
 Type: Package
 Title: UHERO Theme For Ggplot Charts
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Victoria", "Rhinebolt", email="vward@hawaii.edu", role = c("aut", "cre"))
 Description: Creates a theme and utility functions to help export charts following the UHERO style guide.
 License: MIT + file LICENSE
