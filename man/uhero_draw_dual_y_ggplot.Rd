@@ -13,6 +13,7 @@ uhero_draw_dual_y_ggplot(
     = NULL, unit_postfix = NULL, point_size = NULL),
   bubble_legend = TRUE,
   x_order = NULL,
+  legend_bg = "transparent",
   ...
 )
 }
@@ -41,6 +42,9 @@ and their defaults are the same as the `y1` parameter}
 \item{bubble_legend}{Parameter used for bubble plots to indicate if plot should display a size legend, defaults to TRUE.}
 
 \item{x_order}{Optional. Accepts a vector of strings defining the order of a categorical x axis.}
+
+\item{legend_bg}{Background fill for the legend. Defaults to "transparent".
+If the legend overlaps the data, use e.g. alpha("white", 0.7) or "white".}
 
 \item{...}{Additional optional parameters that can be used by ggplot geoms. For example, `position = "dodge2"` for a bar chart.}
 }

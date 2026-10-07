@@ -4,7 +4,15 @@
 \alias{export_plot}
 \title{Export plot}
 \usage{
-export_plot(file_name, plot, w = 1920, h = 1080, u = "px", ...)
+export_plot(
+  file_name,
+  plot,
+  w = 1920,
+  h = 1080,
+  u = "px",
+  bg = "transparent",
+  ...
+)
 }
 \arguments{
 \item{file_name}{A string for the file name, including the extension.}
@@ -17,6 +25,9 @@ export_plot(file_name, plot, w = 1920, h = 1080, u = "px", ...)
 
 \item{u}{A string for the units, defaults to "px" for pixels}
 
+\item{bg}{Background color. Defaults to "transparent". Use e.g. "white" for a
+solid background, or NULL to keep the background set by the plot's theme.}
+
 \item{...}{Additional parameters that can be passed to ggplot2::ggsave}
 }
 \description{
@@ -28,5 +39,5 @@ df <- data.frame(
   y = seq(0, 1, length.out = 10)
 )
 plot <- ggplot2::ggplot(df, ggplot2::aes(x, y)) + ggplot2::geom_point()
-export_report_layout('plot.png', plot)
+export_plot('plot.png', plot)
 }

@@ -4,10 +4,12 @@
 \alias{uhero_theme}
 \title{Adds a UHERO theme for Ggplot charts.}
 \usage{
-uhero_theme(font_size = 9)
+uhero_theme(font_size = 9, bg = "transparent")
 }
 \arguments{
 \item{font_size}{A number indicating the font size to be used by ggplot's element_text. Defaults to 9.}
+
+\item{bg}{Background fill for the plot. Defaults to "transparent".}
 }
 \description{
 Modifies the ggplot minimal theme to fit the style used for UHERO reports/presentations.

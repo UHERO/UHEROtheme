@@ -299,4 +299,4 @@ draw_fcast_layout(transactions_plot2)
 
 # Use export_fcast_layout to export chart for the UHERO Forecast report layout
 # Please use a .svg extension if exporting for the report layout
-export_fcast_layout('transactions.svg', transactions_plot)
+export_fcast_layout('inc_eq.png', inc_eq_plot)

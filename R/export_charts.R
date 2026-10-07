@@ -67,6 +67,17 @@ draw_report_layout <- function(plot, w = 5.6931, h = 4) {
     grid::grid.draw()
 }
 
+#' @noRd
+uhero_save <- function(file_name, plot, w, h, u, bg, ...) {
+  if (!is.null(bg)) {
+    plot <- plot + ggplot2::theme(
+      plot.background = ggplot2::element_rect(fill = bg, colour = NA)
+    )
+  }
+
+  ggsave(filename = file_name, plot = plot, width = w, height = h, units = u, bg = bg, ...)
+}
+
 
 #' Export chart for forecast report layout
 #'
@@ -79,6 +90,8 @@ draw_report_layout <- function(plot, w = 5.6931, h = 4) {
 #' @param w Integer - width of the exported image, defaults to 4.5
 #' @param h Integer - height of the exported image, defaults to 2.45
 #' @param u A string for the units, defaults to "in" for inches
+#' @param bg Background color. Defaults to "transparent". Use e.g. "white" for a
+#' solid background, or NULL to keep the background set by the plot's theme.
 #' @param ... Additional parameters that can be passed to ggplot2::ggsave
 #'
 #' @export
@@ -90,8 +103,8 @@ draw_report_layout <- function(plot, w = 5.6931, h = 4) {
 #' )
 #' plot <- ggplot2::ggplot(df, ggplot2::aes(x, y)) + ggplot2::geom_point()
 #' export_fcast_layout('plot.svg', plot)
-export_fcast_layout <- function(file_name, forecast_plot, w = 4.5, h = 2.45, u = "in", ...) {
-   ggsave(filename = file_name, plot = forecast_plot, width = w, height = h, units = u, ...)
+export_fcast_layout <- function(file_name, forecast_plot, w = 4.5, h = 2.45, u = "in", bg = "transparent", ...) {
+  uhero_save(file_name, forecast_plot, w, h, u, bg, ...)
 }
 
 #' Export chart for UHERO report layout
@@ -105,6 +118,8 @@ export_fcast_layout <- function(file_name, forecast_plot, w = 4.5, h = 2.45, u =
 #' @param w Integer - width of the exported image, defaults to 5.6931
 #' @param h Integer - height of the exported image, defaults to 4
 #' @param u A string for the units, defaults to "in" for inches
+#' @param bg Background color. Defaults to "transparent". Use e.g. "white" for a
+#' solid background, or NULL to keep the background set by the plot's theme.
 #' @param ... Additional parameters that can be passed to ggplot2::ggsave
 #'
 #' @export
@@ -116,8 +131,8 @@ export_fcast_layout <- function(file_name, forecast_plot, w = 4.5, h = 2.45, u =
 #' )
 #' plot <- ggplot2::ggplot(df, ggplot2::aes(x, y)) + ggplot2::geom_point()
 #' export_report_layout('plot.svg', plot)
-export_report_layout <- function(file_name, plot, w = 5.6931, h = 4, u = "in", ...) {
-  ggsave(filename = file_name, plot = plot, width = w, height = h, units = u, ...)
+export_report_layout <- function(file_name, plot, w = 5.6931, h = 4, u = "in", bg = "transparent", ...) {
+  uhero_save(file_name, plot, w, h, u, bg, ...)
 }
 
 #' Export plot
@@ -129,6 +144,8 @@ export_report_layout <- function(file_name, plot, w = 5.6931, h = 4, u = "in", .
 #' @param w Integer - width of the exported image, defaults to 1920
 #' @param h Integer - height of the exported image, defaults to 1080
 #' @param u A string for the units, defaults to "px" for pixels
+#' @param bg Background color. Defaults to "transparent". Use e.g. "white" for a
+#' solid background, or NULL to keep the background set by the plot's theme.
 #' @param ... Additional parameters that can be passed to ggplot2::ggsave
 #'
 #' @export
@@ -139,7 +156,7 @@ export_report_layout <- function(file_name, plot, w = 5.6931, h = 4, u = "in", .
 #'   y = seq(0, 1, length.out = 10)
 #' )
 #' plot <- ggplot2::ggplot(df, ggplot2::aes(x, y)) + ggplot2::geom_point()
-#' export_report_layout('plot.png', plot)
-export_plot <- function(file_name, plot, w = 1920, h = 1080, u = "px", ...) {
-  ggsave(filename = file_name, plot = plot, width = w, height = h, units = u, ...)
+#' export_plot('plot.png', plot)
+export_plot <- function(file_name, plot, w = 1920, h = 1080, u = "px", bg = "transparent", ...) {
+  uhero_save(file_name, plot, w, h, u, bg, ...)
 }
